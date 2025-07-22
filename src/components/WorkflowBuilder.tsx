@@ -9,7 +9,9 @@ import {
   addEdge,
   Connection,
   Edge,
-  Node
+  Node,
+  MarkerType,
+  BackgroundVariant
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Button } from '@/components/ui/button';
@@ -270,29 +272,15 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
       }
     }));
 
-    const styledEdges = config.edges.map(edge => ({
+    const styledEdges: Edge[] = config.edges.map(edge => ({
       ...edge,
       animated: true,
       style: { 
         stroke: 'hsl(var(--primary))', 
-        strokeWidth: 3,
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+        strokeWidth: 3
       },
       markerEnd: {
-        type: 'arrowclosed' as const,
-        color: 'hsl(var(--primary))',
-        width: 20,
-        height: 20
-      },
-      labelStyle: {
-        fill: 'hsl(var(--foreground))',
-        fontWeight: 600,
-        fontSize: '12px'
-      },
-      labelBgStyle: {
-        fill: 'hsl(var(--background))',
-        fillOpacity: 0.9,
-        rx: 8
+        type: MarkerType.ArrowClosed
       }
     }));
 
@@ -305,19 +293,16 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
   const [isBuilding, setIsBuilding] = useState(false);
 
   const onConnect = useCallback((params: Connection) => {
-    const newEdge = {
+    const newEdge: Edge = {
       ...params,
+      id: `${params.source}-${params.target}`,
       animated: true,
       style: { 
         stroke: 'hsl(var(--primary))', 
-        strokeWidth: 3,
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+        strokeWidth: 3
       },
       markerEnd: {
-        type: 'arrowclosed' as const,
-        color: 'hsl(var(--primary))',
-        width: 20,
-        height: 20
+        type: MarkerType.ArrowClosed
       }
     };
     setEdges((eds) => addEdge(newEdge, eds));
@@ -376,7 +361,7 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
             color="hsl(var(--muted-foreground))" 
             gap={24} 
             size={2}
-            variant="dots" as const
+            variant={BackgroundVariant.Dots}
             className="opacity-30"
           />
           <Controls 
