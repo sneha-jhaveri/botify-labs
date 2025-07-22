@@ -56,37 +56,61 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
       id: 'banking',
       name: 'Banking & Fintech',
       icon: '🏦',
-      description: 'KYC automation, loan processing, fraud detection',
+      description: 'KYC automation, loan processing, fraud detection with Zoho CRM',
       complexity: 'Advanced',
       time: '15 min',
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-blue-500 to-cyan-500',
+      integrations: ['Zoho CRM', 'DocuSign', 'Stripe', 'Twilio']
     },
     {
       id: 'ecommerce',
       name: 'E-commerce',
       icon: '🛒',
-      description: 'Cart recovery, product recommendations, support',
+      description: 'Cart recovery with WhatsApp, Gmail & Google Sheets analytics',
       complexity: 'Intermediate',
       time: '10 min',
-      color: 'from-purple-500 to-pink-500'
+      color: 'from-purple-500 to-pink-500',
+      integrations: ['WhatsApp Business', 'Gmail', 'Google Sheets', 'Shopify']
     },
     {
       id: 'realestate',
       name: 'Real Estate',
       icon: '🏠',
-      description: 'Lead qualification, property matching, scheduling',
+      description: 'Lead qualification with Zoho, scheduling via Google Calendar',
       complexity: 'Intermediate',
       time: '12 min',
-      color: 'from-green-500 to-emerald-500'
+      color: 'from-green-500 to-emerald-500',
+      integrations: ['Zoho CRM', 'Google Calendar', 'WhatsApp', 'Gmail']
     },
     {
       id: 'general',
       name: 'Customer Support',
       icon: '💬',
-      description: 'General customer service and inquiry routing',
+      description: 'Multi-channel support with Zendesk, Slack & email automation',
       complexity: 'Beginner',
       time: '8 min',
-      color: 'from-orange-500 to-red-500'
+      color: 'from-orange-500 to-red-500',
+      integrations: ['Zendesk', 'Slack', 'Gmail', 'Google Sheets']
+    },
+    {
+      id: 'sales',
+      name: 'Sales Automation',
+      icon: '💼',
+      description: 'Lead nurturing with Salesforce, HubSpot & automated follow-ups',
+      complexity: 'Advanced',
+      time: '18 min',
+      color: 'from-indigo-500 to-purple-500',
+      integrations: ['Salesforce', 'HubSpot', 'Gmail', 'LinkedIn', 'Calendly']
+    },
+    {
+      id: 'marketing',
+      name: 'Marketing Campaigns',
+      icon: '📈',
+      description: 'Multi-channel campaigns with Mailchimp, social media automation',
+      complexity: 'Intermediate',
+      time: '14 min',
+      color: 'from-pink-500 to-rose-500',
+      integrations: ['Mailchimp', 'Facebook Ads', 'Google Ads', 'Instagram', 'Analytics']
     }
   ];
 
@@ -100,7 +124,7 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
             position: { x: 250, y: 20 },
             data: { 
               label: '💳 Loan Application',
-              description: 'Customer submits loan application'
+              description: 'Customer submits via web portal'
             }
           },
           {
@@ -108,41 +132,60 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
             position: { x: 100, y: 140 },
             data: { 
               label: '🤖 Document AI',
-              description: 'Process income, credit, KYC docs'
+              description: 'Extract data from PDFs'
             }
           },
           {
             id: '3',
             position: { x: 400, y: 140 },
             data: { 
-              label: '🔍 Credit Check',
-              description: 'Automated risk assessment'
+              label: '🔗 Zoho CRM',
+              description: 'Create lead record'
             }
           },
           {
             id: '4',
             position: { x: 250, y: 260 },
             data: { 
-              label: '⚡ Decision Engine',
-              description: 'AI approval/rejection logic'
+              label: '⚡ Credit API',
+              description: 'External credit check'
             }
           },
           {
             id: '5',
-            type: 'output',
-            position: { x: 250, y: 380 },
+            position: { x: 100, y: 380 },
             data: { 
-              label: '📧 Notification',
-              description: 'Customer communication'
+              label: '✍️ DocuSign',
+              description: 'Send for e-signature'
+            }
+          },
+          {
+            id: '6',
+            position: { x: 400, y: 380 },
+            data: { 
+              label: '💳 Stripe',
+              description: 'Process payment'
+            }
+          },
+          {
+            id: '7',
+            type: 'output',
+            position: { x: 250, y: 500 },
+            data: { 
+              label: '📱 Twilio SMS',
+              description: 'Notify approval status'
             }
           }
         ],
         edges: [
           { id: 'e1-2', source: '1', target: '2', label: 'Extract' },
-          { id: 'e1-3', source: '1', target: '3', label: 'Verify' },
-          { id: 'e2-4', source: '2', target: '4', label: 'Analyze' },
-          { id: 'e3-4', source: '3', target: '4', label: 'Score' },
-          { id: 'e4-5', source: '4', target: '5', label: 'Notify' }
+          { id: 'e1-3', source: '1', target: '3', label: 'Create Lead' },
+          { id: 'e2-4', source: '2', target: '4', label: 'Check Credit' },
+          { id: 'e3-4', source: '3', target: '4', label: 'Verify' },
+          { id: 'e4-5', source: '4', target: '5', label: 'Approved' },
+          { id: 'e4-6', source: '4', target: '6', label: 'Payment' },
+          { id: 'e5-7', source: '5', target: '7', label: 'Signed' },
+          { id: 'e6-7', source: '6', target: '7', label: 'Paid' }
         ]
       },
       ecommerce: {
@@ -153,49 +196,67 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
             position: { x: 250, y: 20 },
             data: { 
               label: '🛒 Cart Abandoned',
-              description: 'User leaves without buying'
+              description: 'Shopify webhook trigger'
             }
           },
           {
             id: '2',
             position: { x: 250, y: 140 },
             data: { 
-              label: '🧠 Behavioral AI',
-              description: 'Analyze user patterns'
+              label: '🧠 AI Analysis',
+              description: 'Analyze user behavior'
             }
           },
           {
             id: '3',
             position: { x: 100, y: 260 },
             data: { 
-              label: '📧 Email Sequence',
-              description: 'Personalized recovery emails'
+              label: '📧 Gmail API',
+              description: 'Send recovery email'
             }
           },
           {
             id: '4',
             position: { x: 400, y: 260 },
             data: { 
-              label: '💬 WhatsApp Bot',
-              description: 'Smart messaging with offers'
+              label: '💬 WhatsApp API',
+              description: 'Send personalized message'
             }
           },
           {
             id: '5',
-            type: 'output',
             position: { x: 250, y: 380 },
             data: { 
-              label: '✅ Recovery Success',
-              description: 'Purchase completed'
+              label: '📊 Google Sheets',
+              description: 'Log campaign data'
+            }
+          },
+          {
+            id: '6',
+            position: { x: 100, y: 500 },
+            data: { 
+              label: '🎯 Facebook Ads',
+              description: 'Retargeting campaign'
+            }
+          },
+          {
+            id: '7',
+            type: 'output',
+            position: { x: 400, y: 500 },
+            data: { 
+              label: '✅ Conversion',
+              description: 'Track success metrics'
             }
           }
         ],
         edges: [
           { id: 'e1-2', source: '1', target: '2', label: 'Analyze' },
-          { id: 'e2-3', source: '2', target: '3', label: 'High Value' },
-          { id: 'e2-4', source: '2', target: '4', label: 'Mobile User' },
-          { id: 'e3-5', source: '3', target: '5', label: 'Convert' },
-          { id: 'e4-5', source: '4', target: '5', label: 'Recover' }
+          { id: 'e2-3', source: '2', target: '3', label: 'Email User' },
+          { id: 'e2-4', source: '2', target: '4', label: 'WhatsApp' },
+          { id: 'e2-5', source: '2', target: '5', label: 'Log Data' },
+          { id: 'e3-6', source: '3', target: '6', label: 'Retarget' },
+          { id: 'e4-7', source: '4', target: '7', label: 'Convert' },
+          { id: 'e6-7', source: '6', target: '7', label: 'Success' }
         ]
       },
       realestate: {
@@ -206,49 +267,67 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
             position: { x: 250, y: 20 },
             data: { 
               label: '🏠 Property Inquiry',
-              description: 'Lead shows interest'
+              description: 'Website form submission'
             }
           },
           {
             id: '2',
             position: { x: 250, y: 140 },
             data: { 
-              label: '🎯 Lead Qualifier',
-              description: 'Budget, timeline, preferences'
+              label: '🔗 Zoho CRM',
+              description: 'Create new lead'
             }
           },
           {
             id: '3',
             position: { x: 100, y: 260 },
             data: { 
-              label: '🔍 Property Match',
-              description: 'AI-powered recommendations'
+              label: '🎯 AI Qualifier',
+              description: 'Budget & preference analysis'
             }
           },
           {
             id: '4',
             position: { x: 400, y: 260 },
             data: { 
-              label: '📅 Smart Booking',
-              description: 'Automated viewing scheduler'
+              label: '💬 WhatsApp Bot',
+              description: 'Initial qualification chat'
             }
           },
           {
             id: '5',
-            type: 'output',
-            position: { x: 250, y: 380 },
+            position: { x: 100, y: 380 },
             data: { 
-              label: '👤 Agent Handoff',
-              description: 'Qualified lead to specialist'
+              label: '📅 Google Calendar',
+              description: 'Schedule viewing'
+            }
+          },
+          {
+            id: '6',
+            position: { x: 400, y: 380 },
+            data: { 
+              label: '📧 Gmail Follow-up',
+              description: 'Send property matches'
+            }
+          },
+          {
+            id: '7',
+            type: 'output',
+            position: { x: 250, y: 500 },
+            data: { 
+              label: '👤 Agent Assignment',
+              description: 'Hot lead to specialist'
             }
           }
         ],
         edges: [
-          { id: 'e1-2', source: '1', target: '2', label: 'Qualify' },
-          { id: 'e2-3', source: '2', target: '3', label: 'Search' },
-          { id: 'e2-4', source: '2', target: '4', label: 'Ready' },
-          { id: 'e3-5', source: '3', target: '5', label: 'Match' },
-          { id: 'e4-5', source: '4', target: '5', label: 'Book' }
+          { id: 'e1-2', source: '1', target: '2', label: 'Create Lead' },
+          { id: 'e2-3', source: '2', target: '3', label: 'Qualify' },
+          { id: 'e2-4', source: '2', target: '4', label: 'Chat' },
+          { id: 'e3-5', source: '3', target: '5', label: 'Schedule' },
+          { id: 'e4-6', source: '4', target: '6', label: 'Follow-up' },
+          { id: 'e5-7', source: '5', target: '7', label: 'Assign' },
+          { id: 'e6-7', source: '6', target: '7', label: 'Convert' }
         ]
       },
       general: {
@@ -258,50 +337,203 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
             type: 'input',
             position: { x: 250, y: 20 },
             data: { 
-              label: '💬 Customer Message',
-              description: 'Incoming support request'
+              label: '💬 Multi-Channel',
+              description: 'Email, chat, phone, social'
             }
           },
           {
             id: '2',
             position: { x: 250, y: 140 },
             data: { 
-              label: '🧠 Intent Analysis',
-              description: 'Understand customer needs'
+              label: '🧠 AI Triage',
+              description: 'Smart intent detection'
             }
           },
           {
             id: '3',
             position: { x: 100, y: 260 },
             data: { 
-              label: '👤 Human Agent',
-              description: 'Complex issues escalated'
+              label: '🎫 Zendesk',
+              description: 'Create support ticket'
             }
           },
           {
             id: '4',
             position: { x: 400, y: 260 },
             data: { 
-              label: '🤖 AI Response',
-              description: 'Automated issue resolution'
+              label: '💻 Slack Alert',
+              description: 'Notify support team'
             }
           },
           {
             id: '5',
-            type: 'output',
             position: { x: 250, y: 380 },
             data: { 
-              label: '✅ Issue Resolved',
-              description: 'Customer satisfaction achieved'
+              label: '📊 Google Sheets',
+              description: 'Log interaction data'
+            }
+          },
+          {
+            id: '6',
+            type: 'output',
+            position: { x: 250, y: 500 },
+            data: { 
+              label: '📧 Gmail Follow-up',
+              description: 'Automated resolution'
             }
           }
         ],
         edges: [
-          { id: 'e1-2', source: '1', target: '2', label: 'Process' },
-          { id: 'e2-3', source: '2', target: '3', label: 'Complex' },
-          { id: 'e2-4', source: '2', target: '4', label: 'Simple' },
-          { id: 'e3-5', source: '3', target: '5', label: 'Resolve' },
-          { id: 'e4-5', source: '4', target: '5', label: 'Complete' }
+          { id: 'e1-2', source: '1', target: '2', label: 'Analyze' },
+          { id: 'e2-3', source: '2', target: '3', label: 'Ticket' },
+          { id: 'e2-4', source: '2', target: '4', label: 'Alert' },
+          { id: 'e3-5', source: '3', target: '5', label: 'Log' },
+          { id: 'e4-5', source: '4', target: '5', label: 'Track' },
+          { id: 'e5-6', source: '5', target: '6', label: 'Follow-up' }
+        ]
+      },
+      sales: {
+        nodes: [
+          {
+            id: '1',
+            type: 'input',
+            position: { x: 250, y: 20 },
+            data: { 
+              label: '🎯 Lead Capture',
+              description: 'Website, ads, referrals'
+            }
+          },
+          {
+            id: '2',
+            position: { x: 100, y: 140 },
+            data: { 
+              label: '⚡ Salesforce',
+              description: 'Create opportunity'
+            }
+          },
+          {
+            id: '3',
+            position: { x: 400, y: 140 },
+            data: { 
+              label: '🚀 HubSpot',
+              description: 'Lead scoring & routing'
+            }
+          },
+          {
+            id: '4',
+            position: { x: 250, y: 260 },
+            data: { 
+              label: '🔗 LinkedIn API',
+              description: 'Social prospecting'
+            }
+          },
+          {
+            id: '5',
+            position: { x: 100, y: 380 },
+            data: { 
+              label: '📅 Calendly',
+              description: 'Schedule demos'
+            }
+          },
+          {
+            id: '6',
+            position: { x: 400, y: 380 },
+            data: { 
+              label: '📧 Gmail Sequence',
+              description: 'Nurture campaign'
+            }
+          },
+          {
+            id: '7',
+            type: 'output',
+            position: { x: 250, y: 500 },
+            data: { 
+              label: '🤝 Deal Closed',
+              description: 'Revenue generated'
+            }
+          }
+        ],
+        edges: [
+          { id: 'e1-2', source: '1', target: '2', label: 'Create' },
+          { id: 'e1-3', source: '1', target: '3', label: 'Score' },
+          { id: 'e2-4', source: '2', target: '4', label: 'Research' },
+          { id: 'e3-4', source: '3', target: '4', label: 'Enrich' },
+          { id: 'e4-5', source: '4', target: '5', label: 'Book' },
+          { id: 'e4-6', source: '4', target: '6', label: 'Nurture' },
+          { id: 'e5-7', source: '5', target: '7', label: 'Convert' },
+          { id: 'e6-7', source: '6', target: '7', label: 'Close' }
+        ]
+      },
+      marketing: {
+        nodes: [
+          {
+            id: '1',
+            type: 'input',
+            position: { x: 250, y: 20 },
+            data: { 
+              label: '🎯 Campaign Launch',
+              description: 'Multi-channel activation'
+            }
+          },
+          {
+            id: '2',
+            position: { x: 100, y: 140 },
+            data: { 
+              label: '📧 Mailchimp',
+              description: 'Email campaign'
+            }
+          },
+          {
+            id: '3',
+            position: { x: 400, y: 140 },
+            data: { 
+              label: '📘 Facebook Ads',
+              description: 'Social advertising'
+            }
+          },
+          {
+            id: '4',
+            position: { x: 250, y: 260 },
+            data: { 
+              label: '🔍 Google Ads',
+              description: 'Search campaigns'
+            }
+          },
+          {
+            id: '5',
+            position: { x: 100, y: 380 },
+            data: { 
+              label: '📸 Instagram API',
+              description: 'Content automation'
+            }
+          },
+          {
+            id: '6',
+            position: { x: 400, y: 380 },
+            data: { 
+              label: '📊 Analytics',
+              description: 'Performance tracking'
+            }
+          },
+          {
+            id: '7',
+            type: 'output',
+            position: { x: 250, y: 500 },
+            data: { 
+              label: '🎯 Lead Generation',
+              description: 'Qualified prospects'
+            }
+          }
+        ],
+        edges: [
+          { id: 'e1-2', source: '1', target: '2', label: 'Email' },
+          { id: 'e1-3', source: '1', target: '3', label: 'Social' },
+          { id: 'e1-4', source: '1', target: '4', label: 'Search' },
+          { id: 'e2-5', source: '2', target: '5', label: 'Content' },
+          { id: 'e3-6', source: '3', target: '6', label: 'Track' },
+          { id: 'e4-6', source: '4', target: '6', label: 'Measure' },
+          { id: 'e5-7', source: '5', target: '7', label: 'Convert' },
+          { id: 'e6-7', source: '6', target: '7', label: 'Optimize' }
         ]
       }
     };
@@ -398,6 +630,36 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
     }
   }, [setEdges]);
 
+  const addCustomNode = useCallback((label: string, icon: string) => {
+    const newNode: Node = {
+      id: `custom-${Date.now()}`,
+      position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 200 },
+      data: { 
+        label: `${icon} ${label}`,
+        description: 'Custom integration node'
+      },
+      style: {
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '20px',
+        fontSize: '14px',
+        fontWeight: '600',
+        padding: '20px',
+        minWidth: '200px',
+        minHeight: '80px',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex' as const,
+        flexDirection: 'column' as const,
+        justifyContent: 'center' as const,
+        alignItems: 'center' as const,
+        textAlign: 'center' as const
+      }
+    };
+    setNodes((nds) => [...nds, newNode]);
+  }, [setNodes]);
+
   const handleDeploy = () => {
     setIsConfiguring(true);
     setDeploymentProgress(0);
@@ -444,9 +706,19 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                   <div className="text-3xl mb-3">{template.icon}</div>
                   <h4 className="font-bold mb-2">{template.name}</h4>
                   <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
-                  <div className="flex justify-between items-center text-xs">
-                    <Badge variant="outline" className="text-xs">{template.complexity}</Badge>
-                    <span className="text-muted-foreground">{template.time}</span>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-xs">
+                      <Badge variant="outline" className="text-xs">{template.complexity}</Badge>
+                      <span className="text-muted-foreground">{template.time}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {template.integrations?.slice(0, 3).map((integration, idx) => (
+                        <Badge key={idx} variant="secondary" className="text-xs">{integration}</Badge>
+                      ))}
+                      {template.integrations && template.integrations.length > 3 && (
+                        <Badge variant="secondary" className="text-xs">+{template.integrations.length - 3}</Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -542,22 +814,41 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
             />
           )}
 
-          {/* Floating Action Panel */}
+          {/* Enhanced Floating Action Panel */}
           {!isDemo && (
             <Panel position="top-right" className="m-4">
               <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-border/50 rounded-2xl p-4 shadow-xl space-y-3">
-                <Button variant="outline" size="sm" className="w-full">
+                <h4 className="text-sm font-semibold mb-3">Add Integrations</h4>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Zoho CRM', '🔗')}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Node
+                  Zoho CRM
                 </Button>
-                <Button variant="outline" size="sm" className="w-full">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Configure
+                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('WhatsApp', '💬')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  WhatsApp API
                 </Button>
-                <Button variant="outline" size="sm" className="w-full">
-                  <Code className="w-4 h-4 mr-2" />
-                  View Code
+                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Gmail', '📧')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Gmail API
                 </Button>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Google Sheets', '📊')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Google Sheets
+                </Button>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Slack', '💻')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Slack
+                </Button>
+                <div className="border-t pt-3 mt-3">
+                  <Button variant="outline" size="sm" className="w-full">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Configure
+                  </Button>
+                  <Button variant="outline" size="sm" className="w-full mt-2">
+                    <Code className="w-4 h-4 mr-2" />
+                    Export Code
+                  </Button>
+                </div>
               </div>
             </Panel>
           )}

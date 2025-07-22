@@ -270,13 +270,71 @@ const DemosPage = () => {
                           variant="outline" 
                           size="sm" 
                           className="w-full"
-                          onClick={() => handleDemoComplete(demo.id)}
+                          onClick={() => setActiveDemo(demo.id)}
                         >
                           Try This Workflow
                         </Button>
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Individual Workflow Demos */}
+                  {activeDemo && (
+                    <div className="bg-gradient-ai backdrop-blur-sm border border-primary/20 rounded-3xl p-8">
+                      <div className="flex items-center justify-between mb-6">
+                        <div>
+                          <h3 className="text-2xl font-bold mb-2">
+                            {category.demos.find(d => d.id === activeDemo)?.title} Demo
+                          </h3>
+                          <p className="text-muted-foreground">
+                            {category.demos.find(d => d.id === activeDemo)?.description}
+                          </p>
+                        </div>
+                        <Button variant="ghost" onClick={() => setActiveDemo(null)}>
+                          ✕
+                        </Button>
+                      </div>
+                      
+                      <WorkflowBuilder 
+                        isDemo={false}
+                        industry={category.demos.find(d => d.id === activeDemo)?.industry || 'general'}
+                        onComplete={() => {
+                          handleDemoComplete(activeDemo);
+                          setActiveDemo(null);
+                        }}
+                      />
+                      
+                      {/* Demo Details */}
+                      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="bg-muted/20 rounded-xl p-4">
+                          <h4 className="font-semibold mb-3 text-primary">Business Impact</h4>
+                          <div className="space-y-2 text-sm">
+                            <div>• 75% reduction in response time</div>
+                            <div>• 90% accuracy in lead qualification</div>
+                            <div>• 24/7 automated processing</div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-muted/20 rounded-xl p-4">
+                          <h4 className="font-semibold mb-3 text-secondary">Technical Features</h4>
+                          <div className="space-y-2 text-sm">
+                            <div>• Natural language processing</div>
+                            <div>• Real-time integrations</div>
+                            <div>• Advanced AI routing</div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-muted/20 rounded-xl p-4">
+                          <h4 className="font-semibold mb-3 text-accent">Use Cases</h4>
+                          <div className="space-y-2 text-sm">
+                            <div>• Customer service automation</div>
+                            <div>• Lead qualification & routing</div>
+                            <div>• Document processing</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -315,14 +373,12 @@ const DemosPage = () => {
                   </div>
                 </div>
 
-                {/* Demo Placeholder */}
-                <div className="aspect-video bg-muted/20 flex items-center justify-center border-b border-border/30">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Play className="w-8 h-8 text-primary" />
-                    </div>
-                    <p className="text-sm text-muted-foreground">Interactive demo coming soon</p>
-                  </div>
+                {/* Interactive Industry Demo */}
+                <div className="aspect-video bg-muted/20 border-b border-border/30 overflow-hidden">
+                  <WorkflowBuilder 
+                    isDemo={true}
+                    industry={showcase.title.toLowerCase().split(' ')[0]}
+                  />
                 </div>
 
                 {/* Metrics */}
@@ -336,7 +392,11 @@ const DemosPage = () => {
                     ))}
                   </div>
                   
-                  <Button variant="outline" className="w-full mt-4 group">
+                  <Button 
+                    variant="outline" 
+                    className="w-full mt-4 group"
+                    onClick={() => setActiveDemo(`showcase-${index}`)}
+                  >
                     <span>Try {showcase.title} Demo</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
