@@ -12,7 +12,9 @@ import {
   Node,
   MarkerType,
   BackgroundVariant,
-  Panel
+  Panel,
+  Handle,
+  Position
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Button } from '@/components/ui/button';
@@ -36,7 +38,15 @@ import {
   Sparkles,
   Code,
   Timer,
-  Users
+  Users,
+  Minus,
+  Maximize2,
+  ChevronDown,
+  ChevronUp,
+  Info,
+  Trash2,
+  Copy,
+  Edit3
 } from 'lucide-react';
 
 interface WorkflowBuilderProps {
@@ -44,6 +54,118 @@ interface WorkflowBuilderProps {
   industry?: string;
   onComplete?: () => void;
 }
+
+interface NodeData {
+  label: string;
+  description: string;
+  isMinimized?: boolean;
+  type?: string;
+  icon?: string;
+}
+
+// Custom Node Component with minimize/maximize functionality
+const CustomNode = ({ data, id }: { data: NodeData; id: string }) => {
+  const [isMinimized, setIsMinimized] = useState(data.isMinimized || false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
+  return (
+    <div 
+      className="relative group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Connection Handles */}
+      <Handle 
+        type="target" 
+        position={Position.Top} 
+        className="w-3 h-3 bg-white border-2 border-primary shadow-lg"
+      />
+      <Handle 
+        type="source" 
+        position={Position.Bottom} 
+        className="w-3 h-3 bg-white border-2 border-primary shadow-lg"
+      />
+      
+      {/* Node Content */}
+      <div className={`
+        bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900
+        border-2 border-primary/20 rounded-2xl shadow-xl
+        backdrop-blur-xl transition-all duration-300
+        ${isHovered ? 'shadow-2xl border-primary/40 scale-105' : ''}
+        ${isMinimized ? 'min-w-[120px] min-h-[60px]' : 'min-w-[220px] min-h-[100px]'}
+      `}>
+        {/* Header */}
+        <div className="flex items-center justify-between p-3 border-b border-border/50">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xs">
+              {data.icon || '🔧'}
+            </div>
+            {!isMinimized && (
+              <span className="font-semibold text-sm truncate max-w-[140px]">
+                {data.label}
+              </span>
+            )}
+          </div>
+          
+          {/* Controls */}
+          <div className="flex items-center space-x-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-6 h-6 p-0 opacity-60 hover:opacity-100"
+              onClick={toggleMinimize}
+            >
+              {isMinimized ? <Maximize2 className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+            </Button>
+          </div>
+        </div>
+        
+        {/* Content */}
+        {!isMinimized && (
+          <div className="p-3">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {data.description}
+            </p>
+          </div>
+        )}
+        
+        {/* Status Indicator */}
+        <div className="absolute -top-1 -right-1">
+          <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
+        </div>
+        
+        {/* Hover Actions */}
+        {isHovered && !isMinimized && (
+          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full">
+            <div className="bg-black/80 backdrop-blur-xl rounded-lg px-2 py-1 flex items-center space-x-1">
+              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-primary">
+                <Info className="w-3 h-3" />
+              </Button>
+              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-primary">
+                <Edit3 className="w-3 h-3" />
+              </Button>
+              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-destructive">
+                <Trash2 className="w-3 h-3" />
+              </Button>
+              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-primary">
+                <Copy className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Node types configuration
+const nodeTypes = {
+  custom: CustomNode,
+};
 
 const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, industry = 'general', onComplete }) => {
   const [selectedTemplate, setSelectedTemplate] = useState(industry);
@@ -120,60 +242,79 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
         nodes: [
           {
             id: '1',
-            type: 'input',
+            type: 'custom',
             position: { x: 250, y: 20 },
             data: { 
-              label: '💳 Loan Application',
-              description: 'Customer submits via web portal'
+              label: 'Loan Application',
+              description: 'Customer submits via web portal',
+              icon: '💳',
+              type: 'input'
             }
           },
           {
             id: '2',
+            type: 'custom',
             position: { x: 100, y: 140 },
             data: { 
-              label: '🤖 Document AI',
-              description: 'Extract data from PDFs'
+              label: 'Document AI',
+              description: 'Extract data from PDFs using advanced OCR',
+              icon: '🤖',
+              type: 'ai'
             }
           },
           {
             id: '3',
+            type: 'custom',
             position: { x: 400, y: 140 },
             data: { 
-              label: '🔗 Zoho CRM',
-              description: 'Create lead record'
+              label: 'Zoho CRM',
+              description: 'Create lead record and track progress',
+              icon: '🔗',
+              type: 'integration'
             }
           },
           {
             id: '4',
+            type: 'custom',
             position: { x: 250, y: 260 },
             data: { 
-              label: '⚡ Credit API',
-              description: 'External credit check'
+              label: 'Credit API',
+              description: 'External credit check and scoring',
+              icon: '⚡',
+              type: 'service'
             }
           },
           {
             id: '5',
+            type: 'custom',
             position: { x: 100, y: 380 },
             data: { 
-              label: '✍️ DocuSign',
-              description: 'Send for e-signature'
+              label: 'DocuSign',
+              description: 'Send documents for e-signature',
+              icon: '✍️',
+              type: 'integration'
             }
           },
           {
             id: '6',
+            type: 'custom',
             position: { x: 400, y: 380 },
             data: { 
-              label: '💳 Stripe',
-              description: 'Process payment'
+              label: 'Stripe',
+              description: 'Process payment securely',
+              icon: '💳',
+              type: 'payment'
             }
           },
           {
             id: '7',
-            type: 'output',
+            type: 'custom',
             position: { x: 250, y: 500 },
             data: { 
-              label: '📱 Twilio SMS',
-              description: 'Notify approval status'
+              label: 'Twilio SMS',
+              description: 'Notify approval status via SMS',
+              icon: '📱',
+              type: 'output'
             }
           }
         ],
@@ -192,60 +333,79 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
         nodes: [
           {
             id: '1',
-            type: 'input',
+            type: 'custom',
             position: { x: 250, y: 20 },
             data: { 
-              label: '🛒 Cart Abandoned',
-              description: 'Shopify webhook trigger'
+              label: 'Cart Abandoned',
+              description: 'Shopify webhook trigger for abandoned carts',
+              icon: '🛒',
+              type: 'input'
             }
           },
           {
             id: '2',
+            type: 'custom',
             position: { x: 250, y: 140 },
             data: { 
-              label: '🧠 AI Analysis',
-              description: 'Analyze user behavior'
+              label: 'AI Analysis',
+              description: 'Analyze user behavior and purchase intent',
+              icon: '🧠',
+              type: 'ai'
             }
           },
           {
             id: '3',
+            type: 'custom',
             position: { x: 100, y: 260 },
             data: { 
-              label: '📧 Gmail API',
-              description: 'Send recovery email'
+              label: 'Gmail API',
+              description: 'Send personalized recovery email',
+              icon: '📧',
+              type: 'integration'
             }
           },
           {
             id: '4',
+            type: 'custom',
             position: { x: 400, y: 260 },
             data: { 
-              label: '💬 WhatsApp API',
-              description: 'Send personalized message'
+              label: 'WhatsApp API',
+              description: 'Send personalized WhatsApp message',
+              icon: '💬',
+              type: 'integration'
             }
           },
           {
             id: '5',
+            type: 'custom',
             position: { x: 250, y: 380 },
             data: { 
-              label: '📊 Google Sheets',
-              description: 'Log campaign data'
+              label: 'Google Sheets',
+              description: 'Log campaign performance data',
+              icon: '📊',
+              type: 'storage'
             }
           },
           {
             id: '6',
+            type: 'custom',
             position: { x: 100, y: 500 },
             data: { 
-              label: '🎯 Facebook Ads',
-              description: 'Retargeting campaign'
+              label: 'Facebook Ads',
+              description: 'Launch retargeting campaign',
+              icon: '🎯',
+              type: 'marketing'
             }
           },
           {
             id: '7',
-            type: 'output',
+            type: 'custom',
             position: { x: 400, y: 500 },
             data: { 
-              label: '✅ Conversion',
-              description: 'Track success metrics'
+              label: 'Conversion',
+              description: 'Track success metrics and ROI',
+              icon: '✅',
+              type: 'output'
             }
           }
         ],
@@ -263,60 +423,79 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
         nodes: [
           {
             id: '1',
-            type: 'input',
+            type: 'custom',
             position: { x: 250, y: 20 },
             data: { 
-              label: '🏠 Property Inquiry',
-              description: 'Website form submission'
+              label: 'Property Inquiry',
+              description: 'Website form submission and lead capture',
+              icon: '🏠',
+              type: 'input'
             }
           },
           {
             id: '2',
+            type: 'custom',
             position: { x: 250, y: 140 },
             data: { 
-              label: '🔗 Zoho CRM',
-              description: 'Create new lead'
+              label: 'Zoho CRM',
+              description: 'Create new lead record with property details',
+              icon: '🔗',
+              type: 'integration'
             }
           },
           {
             id: '3',
+            type: 'custom',
             position: { x: 100, y: 260 },
             data: { 
-              label: '🎯 AI Qualifier',
-              description: 'Budget & preference analysis'
+              label: 'AI Qualifier',
+              description: 'Budget & preference analysis using ML',
+              icon: '🎯',
+              type: 'ai'
             }
           },
           {
             id: '4',
+            type: 'custom',
             position: { x: 400, y: 260 },
             data: { 
-              label: '💬 WhatsApp Bot',
-              description: 'Initial qualification chat'
+              label: 'WhatsApp Bot',
+              description: 'Initial qualification chat automation',
+              icon: '💬',
+              type: 'messaging'
             }
           },
           {
             id: '5',
+            type: 'custom',
             position: { x: 100, y: 380 },
             data: { 
-              label: '📅 Google Calendar',
-              description: 'Schedule viewing'
+              label: 'Google Calendar',
+              description: 'Schedule property viewing appointments',
+              icon: '📅',
+              type: 'scheduling'
             }
           },
           {
             id: '6',
+            type: 'custom',
             position: { x: 400, y: 380 },
             data: { 
-              label: '📧 Gmail Follow-up',
-              description: 'Send property matches'
+              label: 'Gmail Follow-up',
+              description: 'Send property matches and updates',
+              icon: '📧',
+              type: 'email'
             }
           },
           {
             id: '7',
-            type: 'output',
+            type: 'custom',
             position: { x: 250, y: 500 },
             data: { 
-              label: '👤 Agent Assignment',
-              description: 'Hot lead to specialist'
+              label: 'Agent Assignment',
+              description: 'Route hot leads to specialist agents',
+              icon: '👤',
+              type: 'output'
             }
           }
         ],
@@ -334,52 +513,68 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
         nodes: [
           {
             id: '1',
-            type: 'input',
+            type: 'custom',
             position: { x: 250, y: 20 },
             data: { 
-              label: '💬 Multi-Channel',
-              description: 'Email, chat, phone, social'
+              label: 'Multi-Channel',
+              description: 'Email, chat, phone, social media inputs',
+              icon: '💬',
+              type: 'input'
             }
           },
           {
             id: '2',
+            type: 'custom',
             position: { x: 250, y: 140 },
             data: { 
-              label: '🧠 AI Triage',
-              description: 'Smart intent detection'
+              label: 'AI Triage',
+              description: 'Smart intent detection and categorization',
+              icon: '🧠',
+              type: 'ai'
             }
           },
           {
             id: '3',
+            type: 'custom',
             position: { x: 100, y: 260 },
             data: { 
-              label: '🎫 Zendesk',
-              description: 'Create support ticket'
+              label: 'Zendesk',
+              description: 'Create and manage support tickets',
+              icon: '🎫',
+              type: 'integration'
             }
           },
           {
             id: '4',
+            type: 'custom',
             position: { x: 400, y: 260 },
             data: { 
-              label: '💻 Slack Alert',
-              description: 'Notify support team'
+              label: 'Slack Alert',
+              description: 'Notify support team instantly',
+              icon: '💻',
+              type: 'communication'
             }
           },
           {
             id: '5',
+            type: 'custom',
             position: { x: 250, y: 380 },
             data: { 
-              label: '📊 Google Sheets',
-              description: 'Log interaction data'
+              label: 'Google Sheets',
+              description: 'Log interaction data and analytics',
+              icon: '📊',
+              type: 'storage'
             }
           },
           {
             id: '6',
-            type: 'output',
+            type: 'custom',
             position: { x: 250, y: 500 },
             data: { 
-              label: '📧 Gmail Follow-up',
-              description: 'Automated resolution'
+              label: 'Gmail Follow-up',
+              description: 'Automated resolution and feedback',
+              icon: '📧',
+              type: 'output'
             }
           }
         ],
@@ -396,60 +591,79 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
         nodes: [
           {
             id: '1',
-            type: 'input',
+            type: 'custom',
             position: { x: 250, y: 20 },
             data: { 
-              label: '🎯 Lead Capture',
-              description: 'Website, ads, referrals'
+              label: 'Lead Capture',
+              description: 'Website, ads, referrals, and form submissions',
+              icon: '🎯',
+              type: 'input'
             }
           },
           {
             id: '2',
+            type: 'custom',
             position: { x: 100, y: 140 },
             data: { 
-              label: '⚡ Salesforce',
-              description: 'Create opportunity'
+              label: 'Salesforce',
+              description: 'Create opportunity and track pipeline',
+              icon: '⚡',
+              type: 'crm'
             }
           },
           {
             id: '3',
+            type: 'custom',
             position: { x: 400, y: 140 },
             data: { 
-              label: '🚀 HubSpot',
-              description: 'Lead scoring & routing'
+              label: 'HubSpot',
+              description: 'Lead scoring & intelligent routing',
+              icon: '🚀',
+              type: 'marketing'
             }
           },
           {
             id: '4',
+            type: 'custom',
             position: { x: 250, y: 260 },
             data: { 
-              label: '🔗 LinkedIn API',
-              description: 'Social prospecting'
+              label: 'LinkedIn API',
+              description: 'Social prospecting and lead enrichment',
+              icon: '🔗',
+              type: 'social'
             }
           },
           {
             id: '5',
+            type: 'custom',
             position: { x: 100, y: 380 },
             data: { 
-              label: '📅 Calendly',
-              description: 'Schedule demos'
+              label: 'Calendly',
+              description: 'Schedule demos and meetings',
+              icon: '📅',
+              type: 'scheduling'
             }
           },
           {
             id: '6',
+            type: 'custom',
             position: { x: 400, y: 380 },
             data: { 
-              label: '📧 Gmail Sequence',
-              description: 'Nurture campaign'
+              label: 'Gmail Sequence',
+              description: 'Automated nurture campaigns',
+              icon: '📧',
+              type: 'email'
             }
           },
           {
             id: '7',
-            type: 'output',
+            type: 'custom',
             position: { x: 250, y: 500 },
             data: { 
-              label: '🤝 Deal Closed',
-              description: 'Revenue generated'
+              label: 'Deal Closed',
+              description: 'Revenue generated and tracked',
+              icon: '🤝',
+              type: 'output'
             }
           }
         ],
@@ -468,60 +682,79 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
         nodes: [
           {
             id: '1',
-            type: 'input',
+            type: 'custom',
             position: { x: 250, y: 20 },
             data: { 
-              label: '🎯 Campaign Launch',
-              description: 'Multi-channel activation'
+              label: 'Campaign Launch',
+              description: 'Multi-channel activation and coordination',
+              icon: '🎯',
+              type: 'input'
             }
           },
           {
             id: '2',
+            type: 'custom',
             position: { x: 100, y: 140 },
             data: { 
-              label: '📧 Mailchimp',
-              description: 'Email campaign'
+              label: 'Mailchimp',
+              description: 'Email campaign automation',
+              icon: '📧',
+              type: 'email'
             }
           },
           {
             id: '3',
+            type: 'custom',
             position: { x: 400, y: 140 },
             data: { 
-              label: '📘 Facebook Ads',
-              description: 'Social advertising'
+              label: 'Facebook Ads',
+              description: 'Social media advertising campaigns',
+              icon: '📘',
+              type: 'advertising'
             }
           },
           {
             id: '4',
+            type: 'custom',
             position: { x: 250, y: 260 },
             data: { 
-              label: '🔍 Google Ads',
-              description: 'Search campaigns'
+              label: 'Google Ads',
+              description: 'Search and display campaigns',
+              icon: '🔍',
+              type: 'advertising'
             }
           },
           {
             id: '5',
+            type: 'custom',
             position: { x: 100, y: 380 },
             data: { 
-              label: '📸 Instagram API',
-              description: 'Content automation'
+              label: 'Instagram API',
+              description: 'Content automation and posting',
+              icon: '📸',
+              type: 'social'
             }
           },
           {
             id: '6',
+            type: 'custom',
             position: { x: 400, y: 380 },
             data: { 
-              label: '📊 Analytics',
-              description: 'Performance tracking'
+              label: 'Analytics',
+              description: 'Performance tracking and optimization',
+              icon: '📊',
+              type: 'analytics'
             }
           },
           {
             id: '7',
-            type: 'output',
+            type: 'custom',
             position: { x: 250, y: 500 },
             data: { 
-              label: '🎯 Lead Generation',
-              description: 'Qualified prospects'
+              label: 'Lead Generation',
+              description: 'Qualified prospects and conversions',
+              icon: '🎯',
+              type: 'output'
             }
           }
         ],
@@ -540,27 +773,14 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
 
     const config = nodeConfigs[industryType as keyof typeof nodeConfigs] || nodeConfigs.general;
     
-    const styledNodes: Node[] = config.nodes.map((node, index) => ({
+    const styledNodes: Node[] = config.nodes.map((node) => ({
       ...node,
       style: {
-        background: index === 0 ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
-                   index === config.nodes.length - 1 ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' :
-                   'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-        color: 'white',
+        padding: '0',
         border: 'none',
-        borderRadius: '20px',
+        background: 'transparent',
         fontSize: '14px',
-        fontWeight: '600',
-        padding: '20px',
-        minWidth: '200px',
-        minHeight: '80px',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-        backdropFilter: 'blur(10px)',
-        display: 'flex' as const,
-        flexDirection: 'column' as const,
-        justifyContent: 'center' as const,
-        alignItems: 'center' as const,
-        textAlign: 'center' as const
+        fontWeight: '500'
       }
     }));
 
@@ -630,31 +850,23 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
     }
   }, [setEdges]);
 
-  const addCustomNode = useCallback((label: string, icon: string) => {
+  const addCustomNode = useCallback((label: string, icon: string, type: string = 'integration') => {
     const newNode: Node = {
       id: `custom-${Date.now()}`,
+      type: 'custom',
       position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 200 },
       data: { 
-        label: `${icon} ${label}`,
-        description: 'Custom integration node'
+        label,
+        description: `Custom ${type} node with advanced configuration`,
+        icon,
+        type
       },
       style: {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
+        padding: '0',
         border: 'none',
-        borderRadius: '20px',
+        background: 'transparent',
         fontSize: '14px',
-        fontWeight: '600',
-        padding: '20px',
-        minWidth: '200px',
-        minHeight: '80px',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-        backdropFilter: 'blur(10px)',
-        display: 'flex' as const,
-        flexDirection: 'column' as const,
-        justifyContent: 'center' as const,
-        alignItems: 'center' as const,
-        textAlign: 'center' as const
+        fontWeight: '500'
       }
     };
     setNodes((nds) => [...nds, newNode]);
@@ -765,88 +977,138 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
       </div>
 
       {/* Enhanced Workflow Canvas */}
-      <div className="relative h-[500px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20 rounded-3xl border-2 border-primary/20 overflow-hidden shadow-2xl">
+      <div className="relative h-[600px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20 rounded-3xl border-2 border-primary/20 overflow-hidden shadow-2xl">
         <ReactFlow
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          nodeTypes={nodeTypes}
           fitView
           attributionPosition="bottom-left"
           nodesDraggable={true}
           nodesConnectable={true}
           elementsSelectable={true}
           connectionLineStyle={{ 
-            stroke: '#667eea', 
-            strokeWidth: 4,
+            stroke: 'hsl(var(--primary))', 
+            strokeWidth: 3,
             strokeDasharray: '8,8'
           }}
           defaultEdgeOptions={{
             animated: true,
             style: { 
-              stroke: '#667eea', 
-              strokeWidth: 4 
+              stroke: 'hsl(var(--primary))', 
+              strokeWidth: 3 
             }
           }}
           className="rounded-3xl"
           proOptions={{ hideAttribution: true }}
         >
           <Background 
-            color="#94a3b8" 
-            gap={30} 
-            size={3}
+            color="hsl(var(--muted-foreground))" 
+            gap={40} 
+            size={2}
             variant={BackgroundVariant.Dots}
-            className="opacity-40"
+            className="opacity-30"
           />
           
           <Controls 
             showInteractive={!isDemo}
-            className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-border/50 rounded-2xl shadow-xl m-4"
+            className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl m-4 overflow-hidden"
           />
           
           {!isDemo && (
             <MiniMap 
-              nodeColor="#667eea"
-              nodeStrokeColor="#4338ca"
-              className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-border/50 rounded-2xl shadow-xl m-4"
+              nodeColor="hsl(var(--primary))"
+              nodeStrokeColor="hsl(var(--primary))"
+              className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl m-4 overflow-hidden"
               maskColor="rgba(255,255,255,0.1)"
+              pannable={true}
+              zoomable={true}
             />
           )}
 
           {/* Enhanced Floating Action Panel */}
           {!isDemo && (
             <Panel position="top-right" className="m-4">
-              <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-border/50 rounded-2xl p-4 shadow-xl space-y-3">
-                <h4 className="text-sm font-semibold mb-3">Add Integrations</h4>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Zoho CRM', '🔗')}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Zoho CRM
-                </Button>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('WhatsApp', '💬')}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  WhatsApp API
-                </Button>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Gmail', '📧')}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Gmail API
-                </Button>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Google Sheets', '📊')}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Google Sheets
-                </Button>
-                <Button variant="outline" size="sm" className="w-full" onClick={() => addCustomNode('Slack', '💻')}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Slack
-                </Button>
-                <div className="border-t pt-3 mt-3">
-                  <Button variant="outline" size="sm" className="w-full">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Configure
+              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-3xl p-6 shadow-2xl space-y-4 min-w-[280px]">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Quick Actions
+                  </h4>
+                  <Badge variant="secondary" className="text-xs">
+                    {nodes.length} nodes
+                  </Badge>
+                </div>
+                
+                <div className="space-y-3">
+                  <h5 className="text-sm font-semibold text-muted-foreground mb-2">Add Integrations</h5>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                    onClick={() => addCustomNode('Zoho CRM', '🔗', 'crm')}
+                  >
+                    <Plus className="w-4 h-4 mr-3" />
+                    <span className="flex-1 text-left">Zoho CRM</span>
+                    <Badge variant="secondary" className="text-xs">CRM</Badge>
                   </Button>
-                  <Button variant="outline" size="sm" className="w-full mt-2">
-                    <Code className="w-4 h-4 mr-2" />
-                    Export Code
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                    onClick={() => addCustomNode('WhatsApp Business', '💬', 'messaging')}
+                  >
+                    <Plus className="w-4 h-4 mr-3" />
+                    <span className="flex-1 text-left">WhatsApp Business</span>
+                    <Badge variant="secondary" className="text-xs">MSG</Badge>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                    onClick={() => addCustomNode('Gmail API', '📧', 'email')}
+                  >
+                    <Plus className="w-4 h-4 mr-3" />
+                    <span className="flex-1 text-left">Gmail API</span>
+                    <Badge variant="secondary" className="text-xs">EMAIL</Badge>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                    onClick={() => addCustomNode('Google Sheets', '📊', 'storage')}
+                  >
+                    <Plus className="w-4 h-4 mr-3" />
+                    <span className="flex-1 text-left">Google Sheets</span>
+                    <Badge variant="secondary" className="text-xs">DATA</Badge>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                    onClick={() => addCustomNode('Slack API', '💻', 'communication')}
+                  >
+                    <Plus className="w-4 h-4 mr-3" />
+                    <span className="flex-1 text-left">Slack API</span>
+                    <Badge variant="secondary" className="text-xs">TEAM</Badge>
+                  </Button>
+                </div>
+                
+                <div className="border-t pt-4 mt-4 space-y-2">
+                  <h5 className="text-sm font-semibold text-muted-foreground mb-2">Workflow Tools</h5>
+                  <Button variant="secondary" size="sm" className="w-full justify-start">
+                    <Settings className="w-4 h-4 mr-3" />
+                    Configure Workflow
+                  </Button>
+                  <Button variant="secondary" size="sm" className="w-full justify-start">
+                    <Code className="w-4 h-4 mr-3" />
+                    Export to Code
+                  </Button>
+                  <Button variant="secondary" size="sm" className="w-full justify-start">
+                    <Play className="w-4 h-4 mr-3" />
+                    Test Workflow
                   </Button>
                 </div>
               </div>
