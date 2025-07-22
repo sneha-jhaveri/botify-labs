@@ -898,11 +898,23 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
     <div className="space-y-8">
       {/* Template Selector */}
       {showTemplates && (
-        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-6 border border-primary/10">
-          <div className="text-center mb-6">
-            <h3 className="text-2xl font-bold mb-2">Choose Your AI Workflow Template</h3>
-            <p className="text-muted-foreground">Select an industry template to get started quickly</p>
+        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-primary/10 overflow-hidden">
+          <div className="flex items-center justify-between p-6 border-b border-primary/10">
+            <div className="text-center flex-1">
+              <h3 className="text-2xl font-bold mb-2">Choose Your AI Workflow Template</h3>
+              <p className="text-muted-foreground">Select an industry template to get started quickly</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowTemplates(false)}
+              className="ml-4"
+            >
+              <Minus className="w-4 h-4" />
+            </Button>
           </div>
+          
+          <div className="p-6">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {templates.map((template) => (
@@ -936,6 +948,24 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                 </div>
               </Card>
             ))}
+          </div>
+        </div>
+        </div>
+      )}
+      
+      {/* Minimized Template Selector */}
+      {!showTemplates && (
+        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-3 border border-primary/10">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Templates Available</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowTemplates(true)}
+              className="h-8"
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       )}

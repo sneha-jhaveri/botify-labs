@@ -66,12 +66,12 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-8">
             {/* Product Dropdown */}
             <div 
-              className="relative"
+              className="relative group"
               onMouseEnter={() => setActiveDropdown('product')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button 
-                className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors"
+                className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-4"
                 onClick={() => navigate('/product')}
               >
                 <span className="font-medium">Product</span>
@@ -79,7 +79,9 @@ const Navigation = () => {
               </button>
               
               {activeDropdown === 'product' && (
-                <div className="absolute top-full left-0 mt-2 w-80 bg-background/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in z-50">
+                <div className="absolute top-full left-0 mt-0 w-80 bg-background/98 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in z-50 group-hover:block"
+                     onMouseEnter={() => setActiveDropdown('product')}
+                     onMouseLeave={() => setActiveDropdown(null)}>
                   <div className="grid grid-cols-1 gap-4">
                     {productFeatures.map((feature) => (
                       <a
@@ -113,12 +115,12 @@ const Navigation = () => {
 
             {/* Use Cases Dropdown */}
             <div 
-              className="relative"
+              className="relative group"
               onMouseEnter={() => setActiveDropdown('usecases')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
               <button 
-                className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors"
+                className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-4"
                 onClick={() => navigate('/use-cases')}
               >
                 <span className="font-medium">Use Cases</span>
@@ -126,7 +128,9 @@ const Navigation = () => {
               </button>
               
               {activeDropdown === 'usecases' && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in">
+                <div className="absolute top-full left-0 mt-0 w-72 bg-background/98 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in z-50 group-hover:block"
+                     onMouseEnter={() => setActiveDropdown('usecases')}
+                     onMouseLeave={() => setActiveDropdown(null)}>
                   <div className="grid grid-cols-1 gap-3">
                     {industries.map((industry) => (
                       <button

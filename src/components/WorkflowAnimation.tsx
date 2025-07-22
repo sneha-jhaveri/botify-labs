@@ -88,13 +88,13 @@ const WorkflowAnimation = () => {
           const endY = (end.position.y / 100) * 100;
 
           return (
-            <g key={`connection-${connectionIndex}`}>
+            <g key={`connection-${start.id}-${end.id}`}>
               <defs>
-                <linearGradient id={`gradient-${connectionIndex}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                <linearGradient id={`gradient-${connectionIndex}-${start.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.8" />
                   <stop offset="100%" stopColor="hsl(var(--secondary))" stopOpacity="0.8" />
                 </linearGradient>
-                <filter id="glow">
+                <filter id={`glow-${connectionIndex}`}>
                   <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
                   <feMerge>
                     <feMergeNode in="coloredBlur"/>
@@ -107,19 +107,19 @@ const WorkflowAnimation = () => {
                 y1={`${startY}%`}
                 x2={`${endX}%`}
                 y2={`${endY}%`}
-                stroke={`url(#gradient-${connectionIndex})`}
+                stroke={`url(#gradient-${connectionIndex}-${start.id})`}
                 strokeWidth="3"
-                filter="url(#glow)"
+                filter={`url(#glow-${connectionIndex})`}
                 className="animate-pulse"
               />
               {/* Animated Data Flow */}
               <circle r="4" fill="hsl(var(--primary))">
                 <animateMotion dur="2s" repeatCount="indefinite">
-                  <mpath xlinkHref={`#path-${connectionIndex}`} />
+                  <mpath xlinkHref={`#path-${start.id}-${end.id}`} />
                 </animateMotion>
               </circle>
               <path
-                id={`path-${connectionIndex}`}
+                id={`path-${start.id}-${end.id}`}
                 d={`M ${startX}% ${startY}% L ${endX}% ${endY}%`}
                 fill="none"
                 stroke="none"

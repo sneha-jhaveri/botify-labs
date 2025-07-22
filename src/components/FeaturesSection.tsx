@@ -13,8 +13,7 @@ import {
   CheckCircle2,
   Play
 } from 'lucide-react';
-import workflowBuilder from '@/assets/workflow-builder.jpg';
-import multiChannel from '@/assets/multi-channel.jpg';
+import CapabilityAnimation from '@/components/CapabilityAnimation';
 
 const FeaturesSection = () => {
   const features = [
@@ -22,7 +21,7 @@ const FeaturesSection = () => {
       icon: Brain,
       title: 'AI Employee Builder',
       description: 'Drag-and-drop agent creation with voice, chat, logic, decision trees, and API integrations.',
-      image: workflowBuilder,
+      animationType: 'ai-employee' as const,
       capabilities: [
         'Visual agent designer',
         'Multi-modal AI (text, voice, vision)',
@@ -35,7 +34,7 @@ const FeaturesSection = () => {
       icon: Workflow,
       title: 'Workflow Automation (iAWO)',
       description: 'No-code visual builder with blocks for triggers, logic, AI actions, and channels.',
-      image: workflowBuilder,
+      animationType: 'workflow' as const,
       capabilities: [
         'Drag-and-drop workflow design',
         'Smart triggers & conditions',
@@ -48,7 +47,7 @@ const FeaturesSection = () => {
       icon: MessageSquare,
       title: 'Multi-Channel Orchestration',
       description: 'WhatsApp, Instagram, Voice, Web, Email — deploy instantly across all channels.',
-      image: multiChannel,
+      animationType: 'multi-channel' as const,
       capabilities: [
         'Unified conversation management',
         'Cross-channel context',
@@ -61,7 +60,7 @@ const FeaturesSection = () => {
       icon: BarChart3,
       title: 'Dashboard Builder',
       description: 'Prompt-based dashboard builder for ops, analytics, lead management and more.',
-      image: workflowBuilder,
+      animationType: 'dashboard' as const,
       capabilities: [
         'Natural language dashboards',
         'Real-time data visualization',
@@ -170,32 +169,13 @@ const FeaturesSection = () => {
                 </div>
               </div>
 
-              {/* Visual */}
+              {/* Visual Animation */}
               <div className={`relative ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                <div className="relative rounded-3xl overflow-hidden shadow-ai border border-primary/20 bg-gradient-ai backdrop-blur-sm group hover:shadow-glow transition-all duration-500">
-                  <img 
-                    src={feature.image} 
-                    alt={`${feature.title} Interface`}
-                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  {/* Interactive Elements */}
-                  <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="bg-background/90 backdrop-blur-sm rounded-xl p-3 border border-border/50">
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full animate-pulse ${
-                          feature.color === 'primary' ? 'bg-primary' :
-                          feature.color === 'secondary' ? 'bg-secondary' :
-                          'bg-accent'
-                        }`} />
-                        <span className="text-sm font-medium">Live</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <CapabilityAnimation
+                  type={feature.animationType}
+                  title={`${feature.title} in Action`}
+                  description="Watch how our AI technology transforms your business processes"
+                />
 
                 {/* Floating Icons */}
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center animate-float">
