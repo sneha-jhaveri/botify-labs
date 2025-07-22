@@ -14,6 +14,8 @@ import {
   Play
 } from 'lucide-react';
 import CapabilityAnimation from '@/components/CapabilityAnimation';
+import InteractiveAIBuilder from '@/components/InteractiveAIBuilder';
+import InteractiveAnalyticsDashboard from '@/components/InteractiveAnalyticsDashboard';
 
 const FeaturesSection = () => {
   const features = [
@@ -169,13 +171,19 @@ const FeaturesSection = () => {
                 </div>
               </div>
 
-              {/* Visual Animation */}
+              {/* Interactive Demo */}
               <div className={`relative ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                <CapabilityAnimation
-                  type={feature.animationType}
-                  title={`${feature.title} in Action`}
-                  description="Watch how our AI technology transforms your business processes"
-                />
+                {feature.title === 'AI Employee Builder' ? (
+                  <InteractiveAIBuilder />
+                ) : feature.title === 'Dashboard Builder' ? (
+                  <InteractiveAnalyticsDashboard />
+                ) : (
+                  <CapabilityAnimation
+                    type={feature.animationType}
+                    title={`${feature.title} in Action`}
+                    description="Watch how our AI technology transforms your business processes"
+                  />
+                )}
 
                 {/* Floating Icons */}
                 <div className="absolute -top-4 -left-4 w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center animate-float">
