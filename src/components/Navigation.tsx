@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
   Menu, 
@@ -16,6 +17,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +50,7 @@ const Navigation = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
               <Brain className="w-6 h-6 text-white" />
             </div>
@@ -58,7 +60,7 @@ const Navigation = () => {
               </h1>
               <p className="text-xs text-muted-foreground -mt-1">AI Employee Platform</p>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
@@ -68,7 +70,10 @@ const Navigation = () => {
               onMouseEnter={() => setActiveDropdown('product')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors">
+              <button 
+                className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors"
+                onClick={() => navigate('/product')}
+              >
                 <span className="font-medium">Product</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
@@ -77,10 +82,10 @@ const Navigation = () => {
                 <div className="absolute top-full left-0 mt-2 w-80 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in">
                   <div className="grid grid-cols-1 gap-4">
                     {productFeatures.map((feature) => (
-                      <a
+                      <button
                         key={feature.name}
-                        href={feature.href}
-                        className="flex items-start space-x-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group"
+                        onClick={() => navigate('/product')}
+                        className="flex items-start space-x-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group w-full text-left"
                       >
                         <feature.icon className="w-5 h-5 text-primary mt-0.5 group-hover:scale-110 transition-transform" />
                         <div>
@@ -94,7 +99,7 @@ const Navigation = () => {
                             {feature.name === 'Dashboard Builder' && 'Prompt-based analytics'}
                           </p>
                         </div>
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -116,25 +121,28 @@ const Navigation = () => {
                 <div className="absolute top-full left-0 mt-2 w-72 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in">
                   <div className="grid grid-cols-1 gap-3">
                     {industries.map((industry) => (
-                      <a
+                      <button
                         key={industry.name}
-                        href={industry.href}
-                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group"
+                        onClick={() => navigate('/demos')}
+                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group w-full text-left"
                       >
                         <industry.icon className="w-5 h-5 text-secondary group-hover:scale-110 transition-transform" />
                         <span className="font-medium text-foreground group-hover:text-primary transition-colors">
                           {industry.name}
                         </span>
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>
               )}
             </div>
 
-            <a href="#demos" className="font-medium text-foreground hover:text-primary transition-colors">
+            <button 
+              onClick={() => navigate('/demos')} 
+              className="font-medium text-foreground hover:text-primary transition-colors"
+            >
               Demos
-            </a>
+            </button>
             <a href="#pricing" className="font-medium text-foreground hover:text-primary transition-colors">
               Pricing
             </a>
