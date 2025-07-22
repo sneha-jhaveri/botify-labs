@@ -12,7 +12,7 @@ import {
   Users,
   TrendingUp
 } from 'lucide-react';
-import aiDashboardHero from '@/assets/ai-dashboard-hero.jpg';
+import workflowPlatformUi from '@/assets/workflow-platform-ui.jpg';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -121,8 +121,8 @@ const HeroSection = () => {
             {/* Main Image Container */}
             <div className="relative rounded-3xl overflow-hidden shadow-ai border border-primary/20 bg-gradient-ai backdrop-blur-sm">
               <img 
-                src={aiDashboardHero} 
-                alt="AI Dashboard Platform Interface" 
+                src={workflowPlatformUi} 
+                alt="Workflow Platform Interface" 
                 className="w-full h-auto object-cover"
               />
               

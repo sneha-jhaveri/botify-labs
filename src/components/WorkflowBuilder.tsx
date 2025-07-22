@@ -171,6 +171,7 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
   const [isConfiguring, setIsConfiguring] = useState(false);
   const [deploymentProgress, setDeploymentProgress] = useState(0);
   const [showTemplates, setShowTemplates] = useState(!isDemo);
+  const [isQuickActionsMinimized, setIsQuickActionsMinimized] = useState(false);
 
   const templates = [
     {
@@ -849,16 +850,17 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
     }
   }, [setEdges]);
 
-  const addCustomNode = useCallback((label: string, icon: string, type: string = 'integration') => {
+  const addCustomNode = useCallback((label: string, icon: string, type: string = 'integration', category: string = 'integration') => {
     const newNode: Node = {
       id: `custom-${Date.now()}`,
       type: 'custom',
       position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 200 },
       data: { 
         label,
-        description: `Custom ${type} node with advanced configuration`,
+        description: `${category === 'ai' ? 'AI-powered' : 'Custom'} ${type} with advanced configuration`,
         icon,
-        type
+        type,
+        category
       },
       style: {
         padding: '0',
@@ -1042,85 +1044,245 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
           {/* Enhanced Floating Action Panel */}
           {!isDemo && (
             <Panel position="top-right" className="m-2 sm:m-4">
-              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-4 min-w-[200px] sm:min-w-[280px] max-w-[90vw] sm:max-w-none">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                    Quick Actions
-                  </h4>
-                  <Badge variant="secondary" className="text-xs">
-                    {nodes.length} nodes
-                  </Badge>
-                </div>
-                
-                <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-                  <h5 className="text-sm font-semibold text-muted-foreground mb-2">Add Integrations</h5>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
-                    onClick={() => addCustomNode('Zoho CRM', '🔗', 'crm')}
-                  >
-                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="flex-1 text-left truncate">Zoho CRM</span>
-                    <Badge variant="secondary" className="text-xs ml-1">CRM</Badge>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
-                    onClick={() => addCustomNode('WhatsApp Business', '💬', 'messaging')}
-                  >
-                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="flex-1 text-left truncate">WhatsApp Business</span>
-                    <Badge variant="secondary" className="text-xs ml-1">MSG</Badge>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
-                    onClick={() => addCustomNode('Gmail API', '📧', 'email')}
-                  >
-                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="flex-1 text-left truncate">Gmail API</span>
-                    <Badge variant="secondary" className="text-xs ml-1">EMAIL</Badge>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
-                    onClick={() => addCustomNode('Google Sheets', '📊', 'storage')}
-                  >
-                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="flex-1 text-left truncate">Google Sheets</span>
-                    <Badge variant="secondary" className="text-xs ml-1">DATA</Badge>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full justify-start hover:shadow-lg transition-all duration-300" 
-                    onClick={() => addCustomNode('Slack API', '💻', 'communication')}
-                  >
-                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="flex-1 text-left truncate">Slack API</span>
-                    <Badge variant="secondary" className="text-xs ml-1">TEAM</Badge>
-                  </Button>
-                </div>
-                
-                <div className="border-t pt-4 mt-4 space-y-2">
-                  <h5 className="text-sm font-semibold text-muted-foreground mb-2">Workflow Tools</h5>
-                  <Button variant="secondary" size="sm" className="w-full justify-start">
-                    <Settings className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="truncate">Configure Workflow</span>
-                  </Button>
-                  <Button variant="secondary" size="sm" className="w-full justify-start">
-                    <Code className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="truncate">Export to Code</span>
-                  </Button>
-                  <Button variant="secondary" size="sm" className="w-full justify-start">
-                    <Play className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                    <span className="truncate">Test Workflow</span>
-                  </Button>
-                </div>
+              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-3xl shadow-2xl space-y-4 max-w-[90vw] sm:max-w-none">
+                {/* Minimized State */}
+                {isQuickActionsMinimized ? (
+                  <div className="p-4 min-w-[200px]">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-base font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                        Quick Actions
+                      </h4>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-6 h-6 p-0 opacity-60 hover:opacity-100"
+                        onClick={() => setIsQuickActionsMinimized(false)}
+                      >
+                        <Maximize2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Full State */
+                  <div className="p-4 sm:p-6 min-w-[200px] sm:min-w-[280px]">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                        Quick Actions
+                      </h4>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {nodes.length} nodes
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-6 h-6 p-0 opacity-60 hover:opacity-100"
+                          onClick={() => setIsQuickActionsMinimized(true)}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                      {/* AI Actions */}
+                      <div>
+                        <h5 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">
+                          <Brain className="w-4 h-4 mr-2" />
+                          AI Actions
+                        </h5>
+                        <div className="space-y-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Text Generator', '🤖', 'text-generation', 'ai')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">AI Text Generator</span>
+                            <Badge variant="secondary" className="text-xs ml-1">AI</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Sentiment Analysis', '🎭', 'sentiment', 'ai')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Sentiment Analysis</span>
+                            <Badge variant="secondary" className="text-xs ml-1">AI</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Intent Recognition', '🧠', 'intent', 'ai')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Intent Recognition</span>
+                            <Badge variant="secondary" className="text-xs ml-1">AI</Badge>
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Triggers */}
+                      <div>
+                        <h5 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">
+                          <Zap className="w-4 h-4 mr-2" />
+                          Triggers
+                        </h5>
+                        <div className="space-y-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Webhook Trigger', '🔔', 'webhook', 'trigger')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Webhook Trigger</span>
+                            <Badge variant="secondary" className="text-xs ml-1">TRIGGER</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Schedule Trigger', '⏰', 'schedule', 'trigger')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Schedule Trigger</span>
+                            <Badge variant="secondary" className="text-xs ml-1">TRIGGER</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Form Submit', '📝', 'form', 'trigger')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Form Submit</span>
+                            <Badge variant="secondary" className="text-xs ml-1">TRIGGER</Badge>
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Integrations */}
+                      <div>
+                        <h5 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">
+                          <Layers3 className="w-4 h-4 mr-2" />
+                          Integrations
+                        </h5>
+                        <div className="space-y-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Zoho CRM', '🔗', 'crm', 'integration')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Zoho CRM</span>
+                            <Badge variant="secondary" className="text-xs ml-1">CRM</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('WhatsApp Business', '💬', 'messaging', 'integration')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">WhatsApp Business</span>
+                            <Badge variant="secondary" className="text-xs ml-1">MSG</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Gmail API', '📧', 'email', 'integration')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Gmail API</span>
+                            <Badge variant="secondary" className="text-xs ml-1">EMAIL</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Google Sheets', '📊', 'storage', 'integration')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Google Sheets</span>
+                            <Badge variant="secondary" className="text-xs ml-1">DATA</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Slack API', '💻', 'communication', 'integration')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Slack API</span>
+                            <Badge variant="secondary" className="text-xs ml-1">TEAM</Badge>
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div>
+                        <h5 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">
+                          <GitBranch className="w-4 h-4 mr-2" />
+                          Actions
+                        </h5>
+                        <div className="space-y-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Send Email', '📤', 'email-send', 'action')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Send Email</span>
+                            <Badge variant="secondary" className="text-xs ml-1">ACTION</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('HTTP Request', '🌐', 'http', 'action')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">HTTP Request</span>
+                            <Badge variant="secondary" className="text-xs ml-1">ACTION</Badge>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Delay', '⏳', 'delay', 'action')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Delay</span>
+                            <Badge variant="secondary" className="text-xs ml-1">ACTION</Badge>
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <div className="border-t pt-4 mt-4 space-y-2">
+                        <h5 className="text-sm font-semibold text-muted-foreground mb-2">Workflow Tools</h5>
+                        <Button variant="secondary" size="sm" className="w-full justify-start">
+                          <Settings className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                          <span className="truncate">Configure Workflow</span>
+                        </Button>
+                        <Button variant="secondary" size="sm" className="w-full justify-start">
+                          <Code className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                          <span className="truncate">Export to Code</span>
+                        </Button>
+                        <Button variant="secondary" size="sm" className="w-full justify-start">
+                          <Play className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                          <span className="truncate">Test Workflow</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </Panel>
           )}
