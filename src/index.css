@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,25 +51,35 @@
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-glow)));
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--accent)) 100%);
-    --gradient-ai: linear-gradient(45deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.1));
+    --gradient-ai: linear-gradient(45deg, hsl(var(--primary) / 0.08), hsl(var(--secondary) / 0.08));
     
-    /* Shadows & Effects */
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.3);
-    --shadow-ai: 0 10px 40px -10px hsl(var(--primary) / 0.2);
-    --shadow-card: 0 4px 20px -4px hsl(225 15% 10% / 0.1);
+    /* Enhanced Shadows & Effects */
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.25), 
+                   0 8px 32px hsl(var(--primary) / 0.15);
+    --shadow-ai: 0 10px 40px -10px hsl(var(--primary) / 0.2), 
+                 0 4px 16px -4px hsl(var(--primary) / 0.1);
+    --shadow-card: 0 1px 3px 0 hsl(225 15% 10% / 0.1), 
+                   0 1px 2px -1px hsl(225 15% 10% / 0.1);
+    --shadow-sharp: 0 2px 8px -1px hsl(225 15% 10% / 0.15), 
+                    0 1px 3px -1px hsl(225 15% 10% / 0.1);
+    --shadow-elegant: 0 4px 16px -4px hsl(225 15% 10% / 0.12), 
+                      0 2px 8px -2px hsl(225 15% 10% / 0.08);
     
-    /* Animations */
-    --transition-ai: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Crisp Animations */
+    --transition-ai: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-sharp: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     
-    /* Neon Button Effects */
+    /* Enhanced Neon Effects */
     --neon-glow: 0 0 5px hsl(var(--primary)), 
                  0 0 10px hsl(var(--primary)), 
                  0 0 15px hsl(var(--primary)), 
-                 0 0 20px hsl(var(--primary));
-    --neon-text-glow: 0 0 5px hsl(var(--primary)), 
-                      0 0 10px hsl(var(--primary)));
-    --neon-border: 2px solid hsl(var(--primary));
+                 0 0 20px hsl(var(--primary)),
+                 0 0 30px hsl(var(--primary));
+    --neon-text-glow: 0 0 3px hsl(var(--primary)), 
+                      0 0 6px hsl(var(--primary)),
+                      0 0 9px hsl(var(--primary));
+    --neon-border: 1px solid hsl(var(--primary));
   }
 
   .dark {
@@ -107,13 +117,20 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Enhanced gradients for dark mode */
+    /* Enhanced dark mode gradients and shadows */
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 50%, hsl(var(--accent)) 100%);
-    --gradient-ai: linear-gradient(45deg, hsl(var(--primary) / 0.15), hsl(var(--secondary) / 0.15));
+    --gradient-ai: linear-gradient(45deg, hsl(var(--primary) / 0.12), hsl(var(--secondary) / 0.12));
     
-    --shadow-glow: 0 0 60px hsl(var(--primary) / 0.4);
-    --shadow-ai: 0 20px 60px -10px hsl(var(--primary) / 0.3);
-    --shadow-card: 0 8px 30px -8px hsl(225 25% 6% / 0.4);
+    --shadow-glow: 0 0 60px hsl(var(--primary) / 0.3), 
+                   0 8px 32px hsl(var(--primary) / 0.2);
+    --shadow-ai: 0 20px 60px -10px hsl(var(--primary) / 0.25), 
+                 0 8px 24px -8px hsl(var(--primary) / 0.15);
+    --shadow-card: 0 2px 8px -1px hsl(225 25% 6% / 0.3), 
+                   0 1px 4px -1px hsl(225 25% 6% / 0.2);
+    --shadow-sharp: 0 4px 16px -2px hsl(225 25% 6% / 0.25), 
+                    0 2px 8px -2px hsl(225 25% 6% / 0.15);
+    --shadow-elegant: 0 8px 32px -8px hsl(225 25% 6% / 0.3), 
+                      0 4px 16px -4px hsl(225 25% 6% / 0.2);
   }
 }
 
@@ -123,22 +140,27 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 }
 
 @layer utilities {
-  /* Animation utilities */
+  /* Sharp Animation utilities */
   .animate-fade-in {
-    animation: fade-in 0.6s ease-out forwards;
+    animation: fade-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
   
   .animate-slide-up {
-    animation: slide-up 0.8s ease-out forwards;
+    animation: slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
   
   .animate-scale-in {
-    animation: scale-in 0.4s ease-out forwards;
+    animation: scale-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
   
   .animate-glow-pulse {
@@ -146,70 +168,19 @@
   }
   
   .animate-float {
-    animation: float 3s ease-in-out infinite;
-}
-
-/* React Flow Customizations */
-.react-flow__node {
-  transition: all 0.2s ease;
-}
-
-.react-flow__node:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
-}
-
-.react-flow__edge-path {
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-}
-
-.react-flow__connection-line {
-  stroke: hsl(var(--primary));
-  stroke-width: 3;
-  stroke-dasharray: 5,5;
-  animation: dash 1s linear infinite;
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: -10;
+    animation: float 4s ease-in-out infinite;
   }
-}
 
-.react-flow__controls {
-  background: hsl(var(--background) / 0.9) !important;
-  backdrop-filter: blur(8px);
-  border: 1px solid hsl(var(--border) / 0.5) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
-}
-
-.react-flow__minimap {
-  background: hsl(var(--background) / 0.9) !important;
-  backdrop-filter: blur(8px);
-  border: 1px solid hsl(var(--border) / 0.5) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
-}
-
-.react-flow__handle {
-  width: 12px !important;
-  height: 12px !important;
-  background: hsl(var(--primary)) !important;
-  border: 2px solid hsl(var(--background)) !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-}
-
-.react-flow__handle:hover {
-  background: hsl(var(--primary-glow)) !important;
-  transform: scale(1.2);
-}
+  /* Typography utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
   
-  .animate-ai-orbit {
-    animation: ai-orbit 20s linear infinite;
+  .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
-
-  /* Transition utilities */
+  
+  /* Sharp transition utilities */
   .transition-ai {
     transition: var(--transition-ai);
   }
@@ -217,28 +188,146 @@
   .transition-smooth {
     transition: var(--transition-smooth);
   }
+  
+  .transition-sharp {
+    transition: var(--transition-sharp);
+  }
+
+  /* Enhanced shadow utilities */
+  .shadow-sharp {
+    box-shadow: var(--shadow-sharp);
+  }
+  
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  
+  .glass-dark {
+    background: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid hsl(var(--border) / 0.3);
+  }
+}
+
+/* Enhanced React Flow Customizations */
+.react-flow__node {
+  transition: var(--transition-sharp);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.react-flow__node:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elegant) !important;
+}
+
+.react-flow__edge-path {
+  filter: drop-shadow(0 2px 6px hsl(var(--primary) / 0.15));
+}
+
+.react-flow__connection-line {
+  stroke: hsl(var(--primary));
+  stroke-width: 2;
+  stroke-dasharray: 3,3;
+  animation: dash 0.8s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -6;
+  }
+}
+
+.react-flow__controls {
+  background: hsl(var(--background) / 0.95) !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid hsl(var(--border) / 0.4) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-elegant) !important;
+}
+
+.react-flow__minimap {
+  background: hsl(var(--background) / 0.95) !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid hsl(var(--border) / 0.4) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-elegant) !important;
+}
+
+.react-flow__handle {
+  width: 8px !important;
+  height: 8px !important;
+  background: hsl(var(--primary)) !important;
+  border: 2px solid hsl(var(--background)) !important;
+  box-shadow: 0 2px 8px hsl(var(--primary) / 0.3) !important;
+  transition: var(--transition-sharp);
+}
+
+.react-flow__handle:hover {
+  background: hsl(var(--primary-glow)) !important;
+  transform: scale(1.4);
+  box-shadow: 0 4px 16px hsl(var(--primary) / 0.5) !important;
+}
+  
+  .animate-ai-orbit {
+    animation: ai-orbit 20s linear infinite;
+  }
 
   /* Text selection */
   ::selection {
-    background: hsl(var(--primary) / 0.3);
+    background: hsl(var(--primary) / 0.25);
     color: hsl(var(--primary-foreground));
   }
 
-  /* Custom scrollbar */
+  /* Enhanced custom scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
+    height: 6px;
   }
   
   ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
+    background: hsl(var(--muted) / 0.3);
+    border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb {
     background: hsl(var(--primary) / 0.5);
-    border-radius: 4px;
+    border-radius: 3px;
+    transition: var(--transition-smooth);
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary) / 0.7);
+    background: hsl(var(--primary) / 0.8);
   }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Form elements */
+  input, textarea, select {
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Enhanced typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    letter-spacing: -0.025em;
+  }
+
+  /* Code elements */
+  code, pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-feature-settings: 'calt' 1, 'liga' 1;
+  }
+}
 }

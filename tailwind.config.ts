@@ -18,7 +18,8 @@ export default {
 			}
 		},
 		fontFamily: {
-			sans: ['Inter', 'system-ui', 'sans-serif'],
+			sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+			mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
 		},
 		extend: {
 			colors: {
@@ -69,12 +70,16 @@ export default {
 			boxShadow: {
 				'glow': 'var(--shadow-glow)',
 				'ai': 'var(--shadow-ai)',
-				'card': 'var(--shadow-card)'
+				'card': 'var(--shadow-card)',
+				'sharp': 'var(--shadow-sharp)',
+				'elegant': 'var(--shadow-elegant)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'2xl': '1.5rem',
+				'3xl': '2rem'
 			},
 			keyframes: {
 				'accordion-down': {
@@ -86,15 +91,15 @@ export default {
 					to: { height: '0' }
 				},
 				'fade-in': {
-					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'0%': { opacity: '0', transform: 'translateY(16px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'slide-up': {
-					'0%': { opacity: '0', transform: 'translateY(40px)' },
+					'0%': { opacity: '0', transform: 'translateY(32px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'scale-in': {
-					'0%': { opacity: '0', transform: 'scale(0.9)' },
+					'0%': { opacity: '0', transform: 'scale(0.95)' },
 					'100%': { opacity: '1', transform: 'scale(1)' }
 				},
 				'glow-pulse': {
@@ -113,15 +118,20 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.6s ease-out',
-				'slide-up': 'slide-up 0.8s ease-out',
-				'scale-in': 'scale-in 0.4s ease-out',
+				'fade-in': 'fade-in 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+				'slide-up': 'slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+				'scale-in': 'scale-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
 				'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
-				'float': 'float 3s ease-in-out infinite',
+				'float': 'float 4s ease-in-out infinite',
 				'ai-orbit': 'ai-orbit 20s linear infinite'
 			},
 			transitionTimingFunction: {
 				'ai': 'cubic-bezier(0.4, 0, 0.2, 1)',
+				'sharp': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+			},
+			letterSpacing: {
+				'tighter': '-0.05em',
+				'tight': '-0.025em',
 			}
 		}
 	},
