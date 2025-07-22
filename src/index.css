@@ -138,7 +138,63 @@
   
   .animate-float {
     animation: float 3s ease-in-out infinite;
+}
+
+/* React Flow Customizations */
+.react-flow__node {
+  transition: all 0.2s ease;
+}
+
+.react-flow__node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+}
+
+.react-flow__edge-path {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.react-flow__connection-line {
+  stroke: hsl(var(--primary));
+  stroke-width: 3;
+  stroke-dasharray: 5,5;
+  animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -10;
   }
+}
+
+.react-flow__controls {
+  background: hsl(var(--background) / 0.9) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.5) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+}
+
+.react-flow__minimap {
+  background: hsl(var(--background) / 0.9) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.5) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+}
+
+.react-flow__handle {
+  width: 12px !important;
+  height: 12px !important;
+  background: hsl(var(--primary)) !important;
+  border: 2px solid hsl(var(--background)) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+}
+
+.react-flow__handle:hover {
+  background: hsl(var(--primary-glow)) !important;
+  transform: scale(1.2);
+}
   
   .animate-ai-orbit {
     animation: ai-orbit 20s linear infinite;
