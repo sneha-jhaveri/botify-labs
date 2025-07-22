@@ -1122,6 +1122,16 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                             <span className="flex-1 text-left truncate">Intent Recognition</span>
                             <Badge variant="secondary" className="text-xs ml-1">AI</Badge>
                           </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full justify-start hover:shadow-lg transition-all duration-300" 
+                            onClick={() => addCustomNode('Voice AI', '🗣️', 'voice', 'ai')}
+                          >
+                            <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                            <span className="flex-1 text-left truncate">Voice AI</span>
+                            <Badge variant="secondary" className="text-xs ml-1">AI</Badge>
+                          </Button>
                         </div>
                       </div>
 
@@ -1267,15 +1277,59 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                       
                       <div className="border-t pt-4 mt-4 space-y-2">
                         <h5 className="text-sm font-semibold text-muted-foreground mb-2">Workflow Tools</h5>
-                        <Button variant="secondary" size="sm" className="w-full justify-start">
+                        <Button 
+                          variant="secondary" 
+                          size="sm" 
+                          className="w-full justify-start"
+                          onClick={() => {
+                            // Simulate workflow configuration
+                            alert('Opening workflow configuration panel...');
+                          }}
+                        >
                           <Settings className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
                           <span className="truncate">Configure Workflow</span>
                         </Button>
-                        <Button variant="secondary" size="sm" className="w-full justify-start">
+                        <Button 
+                          variant="secondary" 
+                          size="sm" 
+                          className="w-full justify-start"
+                          onClick={() => {
+                            // Simulate code export
+                            const workflowCode = `// Generated workflow code
+const workflow = {
+  nodes: ${JSON.stringify(nodes, null, 2)},
+  edges: ${JSON.stringify(edges, null, 2)}
+};`;
+                            navigator.clipboard.writeText(workflowCode);
+                            alert('Workflow code copied to clipboard!');
+                          }}
+                        >
                           <Code className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
                           <span className="truncate">Export to Code</span>
                         </Button>
-                        <Button variant="secondary" size="sm" className="w-full justify-start">
+                        <Button 
+                          variant="secondary" 
+                          size="sm" 
+                          className="w-full justify-start"
+                          onClick={() => {
+                            // Simulate workflow test
+                            setIsConfiguring(true);
+                            setDeploymentProgress(0);
+                            const interval = setInterval(() => {
+                              setDeploymentProgress(prev => {
+                                if (prev >= 100) {
+                                  clearInterval(interval);
+                                  setTimeout(() => {
+                                    setIsConfiguring(false);
+                                    alert('Workflow test completed successfully!');
+                                  }, 500);
+                                  return 100;
+                                }
+                                return prev + 20;
+                              });
+                            }, 300);
+                          }}
+                        >
                           <Play className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
                           <span className="truncate">Test Workflow</span>
                         </Button>

@@ -12,7 +12,7 @@ import {
   Users,
   TrendingUp
 } from 'lucide-react';
-import workflowPlatformUi from '@/assets/workflow-platform-ui.jpg';
+import WorkflowAnimation from '@/components/WorkflowAnimation';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -118,33 +118,7 @@ const HeroSection = () => {
 
           {/* Hero Visual */}
           <div className={`relative ${isVisible ? 'animate-scale-in' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
-            {/* Main Image Container */}
-            <div className="relative rounded-3xl overflow-hidden shadow-ai border border-primary/20 bg-gradient-ai backdrop-blur-sm">
-              <img 
-                src={workflowPlatformUi} 
-                alt="Workflow Platform Interface" 
-                className="w-full h-auto object-cover"
-              />
-              
-              {/* Overlay with Stats */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-              
-              {/* Floating Stats Cards */}
-              <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3">
-                <div className="bg-background/90 backdrop-blur-sm rounded-xl p-3 text-center border border-border/50">
-                  <div className="text-lg font-bold text-primary">24/7</div>
-                  <div className="text-xs text-muted-foreground">Active</div>
-                </div>
-                <div className="bg-background/90 backdrop-blur-sm rounded-xl p-3 text-center border border-border/50">
-                  <div className="text-lg font-bold text-secondary">Multi</div>
-                  <div className="text-xs text-muted-foreground">Channel</div>
-                </div>
-                <div className="bg-background/90 backdrop-blur-sm rounded-xl p-3 text-center border border-border/50">
-                  <div className="text-lg font-bold text-accent">Smart</div>
-                  <div className="text-xs text-muted-foreground">Learning</div>
-                </div>
-              </div>
-            </div>
+            <WorkflowAnimation />
 
             {/* Orbiting Elements */}
             <div className="absolute -top-6 -right-6 w-12 h-12 bg-primary/20 rounded-full animate-ai-orbit">
