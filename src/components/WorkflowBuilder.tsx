@@ -95,39 +95,38 @@ const CustomNode = ({ data, id }: { data: NodeData; id: string }) => {
         bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900
         border-2 border-primary/20 rounded-2xl shadow-xl
         backdrop-blur-xl transition-all duration-300
-        ${isHovered ? 'shadow-2xl border-primary/40 scale-105' : ''}
-        ${isMinimized ? 'min-w-[120px] min-h-[60px]' : 'min-w-[220px] min-h-[100px]'}
+        ${isHovered ? 'shadow-2xl border-primary/40 scale-[1.02]' : ''}
+        ${isMinimized ? 'w-[80px] h-[40px] min-w-0 min-h-0' : 'w-[200px] h-auto min-w-[200px] min-h-[80px]'}
+        max-w-[250px] overflow-hidden
       `}>
         {/* Header */}
-        <div className="flex items-center justify-between p-3 border-b border-border/50">
-          <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xs">
+        <div className="flex items-center justify-between p-2 border-b border-border/50">
+          <div className="flex items-center space-x-2 flex-1 min-w-0">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xs flex-shrink-0">
               {data.icon || '🔧'}
             </div>
             {!isMinimized && (
-              <span className="font-semibold text-sm truncate max-w-[140px]">
+              <span className="font-semibold text-xs truncate">
                 {data.label}
               </span>
             )}
           </div>
           
           {/* Controls */}
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-6 h-6 p-0 opacity-60 hover:opacity-100"
-              onClick={toggleMinimize}
-            >
-              {isMinimized ? <Maximize2 className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-5 h-5 p-0 opacity-60 hover:opacity-100 flex-shrink-0"
+            onClick={toggleMinimize}
+          >
+            {isMinimized ? <Maximize2 className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+          </Button>
         </div>
         
         {/* Content */}
         {!isMinimized && (
-          <div className="p-3">
-            <p className="text-xs text-muted-foreground leading-relaxed">
+          <div className="p-2">
+            <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
               {data.description}
             </p>
           </div>
@@ -135,23 +134,23 @@ const CustomNode = ({ data, id }: { data: NodeData; id: string }) => {
         
         {/* Status Indicator */}
         <div className="absolute -top-1 -right-1">
-          <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
+          <div className="w-2 h-2 bg-green-500 rounded-full border border-white shadow-sm"></div>
         </div>
         
         {/* Hover Actions */}
         {isHovered && !isMinimized && (
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full">
-            <div className="bg-black/80 backdrop-blur-xl rounded-lg px-2 py-1 flex items-center space-x-1">
-              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-primary">
+          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full z-50">
+            <div className="bg-black/90 backdrop-blur-xl rounded-lg px-2 py-1 flex items-center space-x-1 shadow-xl">
+              <Button variant="ghost" size="sm" className="w-5 h-5 p-0 text-white hover:text-primary">
                 <Info className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-primary">
+              <Button variant="ghost" size="sm" className="w-5 h-5 p-0 text-white hover:text-primary">
                 <Edit3 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-destructive">
+              <Button variant="ghost" size="sm" className="w-5 h-5 p-0 text-white hover:text-destructive">
                 <Trash2 className="w-3 h-3" />
               </Button>
-              <Button variant="ghost" size="sm" className="w-6 h-6 p-0 text-white hover:text-primary">
+              <Button variant="ghost" size="sm" className="w-5 h-5 p-0 text-white hover:text-primary">
                 <Copy className="w-3 h-3" />
               </Button>
             </div>
@@ -977,7 +976,7 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
       </div>
 
       {/* Enhanced Workflow Canvas */}
-      <div className="relative h-[600px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20 rounded-3xl border-2 border-primary/20 overflow-hidden shadow-2xl">
+      <div className="relative h-[400px] sm:h-[500px] lg:h-[600px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20 rounded-3xl border-2 border-primary/20 overflow-hidden shadow-2xl">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -986,6 +985,11 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
           onConnect={onConnect}
           nodeTypes={nodeTypes}
           fitView
+          fitViewOptions={{
+            padding: 0.1,
+            minZoom: 0.5,
+            maxZoom: 1.5
+          }}
           attributionPosition="bottom-left"
           nodesDraggable={true}
           nodesConnectable={true}
@@ -1004,6 +1008,12 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
           }}
           className="rounded-3xl"
           proOptions={{ hideAttribution: true }}
+          panOnScroll={true}
+          zoomOnScroll={true}
+          zoomOnPinch={true}
+          zoomOnDoubleClick={true}
+          minZoom={0.1}
+          maxZoom={2}
         >
           <Background 
             color="hsl(var(--muted-foreground))" 
@@ -1015,14 +1025,14 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
           
           <Controls 
             showInteractive={!isDemo}
-            className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl m-4 overflow-hidden"
+            className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl m-2 sm:m-4 overflow-hidden"
           />
           
           {!isDemo && (
             <MiniMap 
               nodeColor="hsl(var(--primary))"
               nodeStrokeColor="hsl(var(--primary))"
-              className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl m-4 overflow-hidden"
+              className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl m-2 sm:m-4 overflow-hidden hidden sm:block"
               maskColor="rgba(255,255,255,0.1)"
               pannable={true}
               zoomable={true}
@@ -1031,10 +1041,10 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
 
           {/* Enhanced Floating Action Panel */}
           {!isDemo && (
-            <Panel position="top-right" className="m-4">
-              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-3xl p-6 shadow-2xl space-y-4 min-w-[280px]">
+            <Panel position="top-right" className="m-2 sm:m-4">
+              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-border/50 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-4 min-w-[200px] sm:min-w-[280px] max-w-[90vw] sm:max-w-none">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  <h4 className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                     Quick Actions
                   </h4>
                   <Badge variant="secondary" className="text-xs">
@@ -1042,7 +1052,7 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                   </Badge>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-[60vh] overflow-y-auto">
                   <h5 className="text-sm font-semibold text-muted-foreground mb-2">Add Integrations</h5>
                   <Button 
                     variant="outline" 
@@ -1050,9 +1060,9 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                     className="w-full justify-start hover:shadow-lg transition-all duration-300" 
                     onClick={() => addCustomNode('Zoho CRM', '🔗', 'crm')}
                   >
-                    <Plus className="w-4 h-4 mr-3" />
-                    <span className="flex-1 text-left">Zoho CRM</span>
-                    <Badge variant="secondary" className="text-xs">CRM</Badge>
+                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="flex-1 text-left truncate">Zoho CRM</span>
+                    <Badge variant="secondary" className="text-xs ml-1">CRM</Badge>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -1060,9 +1070,9 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                     className="w-full justify-start hover:shadow-lg transition-all duration-300" 
                     onClick={() => addCustomNode('WhatsApp Business', '💬', 'messaging')}
                   >
-                    <Plus className="w-4 h-4 mr-3" />
-                    <span className="flex-1 text-left">WhatsApp Business</span>
-                    <Badge variant="secondary" className="text-xs">MSG</Badge>
+                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="flex-1 text-left truncate">WhatsApp Business</span>
+                    <Badge variant="secondary" className="text-xs ml-1">MSG</Badge>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -1070,9 +1080,9 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                     className="w-full justify-start hover:shadow-lg transition-all duration-300" 
                     onClick={() => addCustomNode('Gmail API', '📧', 'email')}
                   >
-                    <Plus className="w-4 h-4 mr-3" />
-                    <span className="flex-1 text-left">Gmail API</span>
-                    <Badge variant="secondary" className="text-xs">EMAIL</Badge>
+                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="flex-1 text-left truncate">Gmail API</span>
+                    <Badge variant="secondary" className="text-xs ml-1">EMAIL</Badge>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -1080,9 +1090,9 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                     className="w-full justify-start hover:shadow-lg transition-all duration-300" 
                     onClick={() => addCustomNode('Google Sheets', '📊', 'storage')}
                   >
-                    <Plus className="w-4 h-4 mr-3" />
-                    <span className="flex-1 text-left">Google Sheets</span>
-                    <Badge variant="secondary" className="text-xs">DATA</Badge>
+                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="flex-1 text-left truncate">Google Sheets</span>
+                    <Badge variant="secondary" className="text-xs ml-1">DATA</Badge>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -1090,25 +1100,25 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
                     className="w-full justify-start hover:shadow-lg transition-all duration-300" 
                     onClick={() => addCustomNode('Slack API', '💻', 'communication')}
                   >
-                    <Plus className="w-4 h-4 mr-3" />
-                    <span className="flex-1 text-left">Slack API</span>
-                    <Badge variant="secondary" className="text-xs">TEAM</Badge>
+                    <Plus className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="flex-1 text-left truncate">Slack API</span>
+                    <Badge variant="secondary" className="text-xs ml-1">TEAM</Badge>
                   </Button>
                 </div>
                 
                 <div className="border-t pt-4 mt-4 space-y-2">
                   <h5 className="text-sm font-semibold text-muted-foreground mb-2">Workflow Tools</h5>
                   <Button variant="secondary" size="sm" className="w-full justify-start">
-                    <Settings className="w-4 h-4 mr-3" />
-                    Configure Workflow
+                    <Settings className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="truncate">Configure Workflow</span>
                   </Button>
                   <Button variant="secondary" size="sm" className="w-full justify-start">
-                    <Code className="w-4 h-4 mr-3" />
-                    Export to Code
+                    <Code className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="truncate">Export to Code</span>
                   </Button>
                   <Button variant="secondary" size="sm" className="w-full justify-start">
-                    <Play className="w-4 h-4 mr-3" />
-                    Test Workflow
+                    <Play className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="truncate">Test Workflow</span>
                   </Button>
                 </div>
               </div>
