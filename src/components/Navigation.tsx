@@ -79,12 +79,17 @@ const Navigation = () => {
               </button>
               
               {activeDropdown === 'product' && (
-                <div className="absolute top-full left-0 mt-2 w-80 bg-card/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in">
+                <div className="absolute top-full left-0 mt-2 w-80 bg-background/95 backdrop-blur-xl border border-border/50 rounded-xl shadow-ai p-6 animate-fade-in z-50">
                   <div className="grid grid-cols-1 gap-4">
                     {productFeatures.map((feature) => (
-                      <button
+                      <a
                         key={feature.name}
-                        onClick={() => navigate('/product')}
+                        href={feature.href}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate('/product');
+                          setActiveDropdown(null);
+                        }}
                         className="flex items-start space-x-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group w-full text-left"
                       >
                         <feature.icon className="w-5 h-5 text-primary mt-0.5 group-hover:scale-110 transition-transform" />
@@ -99,7 +104,7 @@ const Navigation = () => {
                             {feature.name === 'Dashboard Builder' && 'Prompt-based analytics'}
                           </p>
                         </div>
-                      </button>
+                      </a>
                     ))}
                   </div>
                 </div>

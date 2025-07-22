@@ -374,23 +374,28 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
   }, [selectedTemplate, setNodes, setEdges]);
 
   const onConnect = useCallback((params: Connection) => {
-    const newEdge: Edge = {
-      ...params,
-      id: `${params.source}-${params.target}-${Date.now()}`,
-      animated: true,
-      style: { 
-        stroke: '#667eea', 
-        strokeWidth: 4,
-        filter: 'drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3))'
-      },
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-        color: '#667eea',
-        width: 25,
-        height: 25
-      }
-    };
-    setEdges((eds) => addEdge(newEdge, eds));
+    if (params.source && params.target) {
+      const newEdge: Edge = {
+        id: `${params.source}-${params.target}-${Date.now()}`,
+        source: params.source,
+        target: params.target,
+        sourceHandle: params.sourceHandle,
+        targetHandle: params.targetHandle,
+        animated: true,
+        style: { 
+          stroke: '#667eea', 
+          strokeWidth: 4,
+          filter: 'drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3))'
+        },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: '#667eea',
+          width: 25,
+          height: 25
+        }
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
+    }
   }, [setEdges]);
 
   const handleDeploy = () => {
@@ -497,9 +502,9 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
           onConnect={onConnect}
           fitView
           attributionPosition="bottom-left"
-          nodesDraggable={!isDemo}
-          nodesConnectable={!isDemo}
-          elementsSelectable={!isDemo}
+          nodesDraggable={true}
+          nodesConnectable={true}
+          elementsSelectable={true}
           connectionLineStyle={{ 
             stroke: '#667eea', 
             strokeWidth: 4,

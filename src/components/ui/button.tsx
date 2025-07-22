@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-primary text-primary-foreground hover:shadow-glow hover:scale-105 transition-all duration-300",
+        default: "neon-button bg-gradient-primary text-primary-foreground hover:shadow-glow hover:scale-105 transition-all duration-300",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border-2 border-primary/20 bg-background/50 backdrop-blur-sm text-foreground hover:bg-primary/5 hover:border-primary/40 hover:shadow-ai",
-        secondary: "bg-gradient-secondary text-secondary-foreground hover:shadow-glow hover:scale-105 transition-all duration-300",
+        outline: "border-2 border-primary/20 bg-background/50 backdrop-blur-sm text-foreground hover:bg-primary/5 hover:border-primary/40 hover:shadow-ai neon-border-flow",
+        secondary: "neon-button bg-gradient-secondary text-secondary-foreground hover:shadow-glow hover:scale-105 transition-all duration-300",
         ghost: "hover:bg-primary/10 hover:text-primary",
         link: "text-primary underline-offset-4 hover:underline hover:text-primary-glow",
         // Premium BotWot AI variants
-        ai: "bg-gradient-ai backdrop-blur-sm border border-primary/20 text-foreground hover:border-primary/40 hover:bg-primary/5 hover:shadow-ai transition-all duration-500",
-        cta: "bg-gradient-hero text-white font-bold hover:shadow-glow hover:scale-105 transform transition-all duration-300 shadow-ai",
-        hero: "bg-background/10 backdrop-blur-lg border border-white/20 text-white hover:bg-white/20 hover:shadow-glow transition-all duration-300",
-        demo: "bg-accent text-accent-foreground hover:bg-accent-glow hover:shadow-glow hover:scale-105 transition-all duration-300",
+        ai: "bg-gradient-ai backdrop-blur-sm border border-primary/20 text-foreground hover:border-primary/40 hover:bg-primary/5 hover:shadow-ai transition-all duration-500 neon-border-flow",
+        cta: "neon-button bg-gradient-hero text-white font-bold hover:shadow-glow hover:scale-105 transform transition-all duration-300 shadow-ai",
+        hero: "neon-button bg-background/10 backdrop-blur-lg border border-white/20 text-white hover:bg-white/20 hover:shadow-glow transition-all duration-300",
+        demo: "neon-button bg-accent text-accent-foreground hover:bg-accent-glow hover:shadow-glow hover:scale-105 transition-all duration-300",
         minimal: "bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-300"
       },
       size: {
