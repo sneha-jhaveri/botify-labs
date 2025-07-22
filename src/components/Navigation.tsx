@@ -112,7 +112,10 @@ const Navigation = () => {
               onMouseEnter={() => setActiveDropdown('usecases')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors">
+              <button 
+                className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors"
+                onClick={() => navigate('/use-cases')}
+              >
                 <span className="font-medium">Use Cases</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
@@ -123,7 +126,7 @@ const Navigation = () => {
                     {industries.map((industry) => (
                       <button
                         key={industry.name}
-                        onClick={() => navigate('/demos')}
+                        onClick={() => navigate('/use-cases')}
                         className="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/5 transition-colors group w-full text-left"
                       >
                         <industry.icon className="w-5 h-5 text-secondary group-hover:scale-110 transition-transform" />
@@ -143,12 +146,18 @@ const Navigation = () => {
             >
               Demos
             </button>
-            <a href="#pricing" className="font-medium text-foreground hover:text-primary transition-colors">
+            <button 
+              onClick={() => navigate('/pricing')}
+              className="font-medium text-foreground hover:text-primary transition-colors"
+            >
               Pricing
-            </a>
-            <a href="#technology" className="font-medium text-foreground hover:text-primary transition-colors">
+            </button>
+            <button 
+              onClick={() => navigate('/technology')}
+              className="font-medium text-foreground hover:text-primary transition-colors"
+            >
               Technology
-            </a>
+            </button>
           </div>
 
           {/* CTA Buttons */}
@@ -208,15 +217,24 @@ const Navigation = () => {
               </div>
 
               <div className="space-y-3">
-                <a href="#demos" className="block font-medium text-foreground hover:text-primary transition-colors">
+                <button 
+                  onClick={() => navigate('/demos')}
+                  className="block font-medium text-foreground hover:text-primary transition-colors"
+                >
                   Demos
-                </a>
-                <a href="#pricing" className="block font-medium text-foreground hover:text-primary transition-colors">
+                </button>
+                <button 
+                  onClick={() => navigate('/pricing')}
+                  className="block font-medium text-foreground hover:text-primary transition-colors"
+                >
                   Pricing
-                </a>
-                <a href="#technology" className="block font-medium text-foreground hover:text-primary transition-colors">
+                </button>
+                <button 
+                  onClick={() => navigate('/technology')}
+                  className="block font-medium text-foreground hover:text-primary transition-colors"
+                >
                   Technology
-                </a>
+                </button>
               </div>
 
               <div className="pt-4 space-y-3">
