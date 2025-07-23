@@ -170,8 +170,8 @@ const WorkflowBuilder: React.FC<WorkflowBuilderProps> = ({ isDemo = true, indust
   const [selectedTemplate, setSelectedTemplate] = useState(industry);
   const [isConfiguring, setIsConfiguring] = useState(false);
   const [deploymentProgress, setDeploymentProgress] = useState(0);
-  const [showTemplates, setShowTemplates] = useState(!isDemo);
-  const [isQuickActionsMinimized, setIsQuickActionsMinimized] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false); // Minimized by default
+  const [isQuickActionsMinimized, setIsQuickActionsMinimized] = useState(true); // Minimized by default
 
   const templates = [
     {

@@ -26,11 +26,12 @@ const WorkflowAnimation = () => {
   const [isCompleted, setIsCompleted] = useState(false);
 
   const steps: ConnectionStep[] = [
-    { id: 'trigger', name: 'Form Submit', icon: Database, position: { x: 20, y: 50 }, color: 'from-blue-500 to-cyan-500', delay: 0 },
-    { id: 'ai', name: 'AI Analysis', icon: Bot, position: { x: 50, y: 20 }, color: 'from-purple-500 to-pink-500', delay: 1000 },
-    { id: 'crm', name: 'Update CRM', icon: Database, position: { x: 80, y: 50 }, color: 'from-green-500 to-emerald-500', delay: 2000 },
-    { id: 'email', name: 'Send Email', icon: Mail, position: { x: 50, y: 80 }, color: 'from-orange-500 to-red-500', delay: 3000 },
-    { id: 'whatsapp', name: 'WhatsApp Msg', icon: MessageSquare, position: { x: 20, y: 80 }, color: 'from-indigo-500 to-purple-500', delay: 4000 },
+    { id: 'ticket', name: 'Ticket Created', icon: Database, position: { x: 15, y: 30 }, color: 'from-blue-500 to-cyan-500', delay: 0 },
+    { id: 'sentiment', name: 'Sentiment Analysis', icon: Bot, position: { x: 50, y: 15 }, color: 'from-purple-500 to-pink-500', delay: 1000 },
+    { id: 'history', name: 'Purchase History', icon: Database, position: { x: 85, y: 30 }, color: 'from-emerald-500 to-green-500', delay: 2000 },
+    { id: 'decision', name: 'AI Decision Engine', icon: Settings, position: { x: 50, y: 50 }, color: 'from-yellow-500 to-orange-500', delay: 3000 },
+    { id: 'whatsapp', name: 'Auto WhatsApp', icon: MessageSquare, position: { x: 25, y: 80 }, color: 'from-green-600 to-emerald-600', delay: 4000 },
+    { id: 'email', name: 'Smart Email', icon: Mail, position: { x: 75, y: 80 }, color: 'from-red-500 to-pink-500', delay: 5000 },
   ];
 
   useEffect(() => {
@@ -171,11 +172,21 @@ const WorkflowAnimation = () => {
               )}
             </div>
             
-            {/* Step Label */}
+            {/* Step Label with Smart Details */}
             <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center">
               <div className="bg-black/80 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-lg border border-white/20 whitespace-nowrap">
                 {step.name}
               </div>
+              {isCurrentStep && (
+                <div className="absolute top-8 left-1/2 transform -translate-x-1/2 mt-1 bg-primary/90 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded border border-primary/30 whitespace-nowrap animate-fade-in">
+                  {step.id === 'ticket' && 'Customer complaint detected'}
+                  {step.id === 'sentiment' && 'Negative sentiment: 85%'}
+                  {step.id === 'history' && 'Premium customer: $12k spent'}
+                  {step.id === 'decision' && 'Route to priority support'}
+                  {step.id === 'whatsapp' && 'Personal apology sent'}
+                  {step.id === 'email' && 'Discount coupon delivered'}
+                </div>
+              )}
             </div>
           </div>
         );
