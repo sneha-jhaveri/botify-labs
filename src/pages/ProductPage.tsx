@@ -3,6 +3,8 @@ import Navigation from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import WorkflowBuilder from '@/components/WorkflowBuilder';
 import LiveDemo from '@/components/LiveDemo';
+import InteractiveAIBuilder from '@/components/InteractiveAIBuilder';
+import InteractiveAnalyticsDashboard from '@/components/InteractiveAnalyticsDashboard';
 import { 
   Brain, 
   Workflow, 
@@ -229,20 +231,12 @@ const ProductPage = () => {
                     </div>
                   )}
 
-                  {(feature.demo === 'builder' || feature.demo === 'analytics') && (
-                    <div className="bg-gradient-ai backdrop-blur-sm border border-primary/20 rounded-3xl p-8 text-center">
-                      <div className="w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center mx-auto mb-4 shadow-glow">
-                        <feature.icon className="w-8 h-8 text-white" />
-                      </div>
-                      <h4 className="text-xl font-bold mb-2">Interactive {feature.title}</h4>
-                      <p className="text-muted-foreground mb-6">
-                        Experience the full power of our {feature.title.toLowerCase()} in action
-                      </p>
-                      <Button variant="cta" className="group">
-                        <span>Launch {feature.title}</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-                    </div>
+                  {feature.demo === 'builder' && (
+                    <InteractiveAIBuilder />
+                  )}
+
+                  {feature.demo === 'analytics' && (
+                    <InteractiveAnalyticsDashboard />
                   )}
                 </div>
               </div>
