@@ -5,6 +5,7 @@ import WorkflowBuilder from '@/components/WorkflowBuilder';
 import LiveDemo from '@/components/LiveDemo';
 import InteractiveAIBuilder from '@/components/InteractiveAIBuilder';
 import InteractiveAnalyticsDashboard from '@/components/InteractiveAnalyticsDashboard';
+import InteractiveCRM from '@/components/InteractiveCRM';
 import { 
   Brain, 
   Workflow, 
@@ -18,7 +19,9 @@ import {
   Users,
   Globe,
   Shield,
-  TrendingUp
+  TrendingUp,
+  Target,
+  UserCheck
 } from 'lucide-react';
 
 const ProductPage = () => {
@@ -74,6 +77,19 @@ const ProductPage = () => {
         'Export & reporting'
       ],
       demo: 'analytics'
+    },
+    {
+      icon: Target,
+      title: 'Functional CRM & Marketing',
+      description: 'Complete customer lifecycle management with intelligent automation',
+      details: [
+        'Lead scoring & qualification',
+        'Automated follow-up sequences',
+        'Customer journey mapping',
+        'Sales pipeline optimization',
+        'Marketing campaign automation'
+      ],
+      demo: 'crm'
     }
   ];
 
@@ -237,6 +253,10 @@ const ProductPage = () => {
 
                   {feature.demo === 'analytics' && (
                     <InteractiveAnalyticsDashboard />
+                  )}
+
+                  {feature.demo === 'crm' && (
+                    <InteractiveCRM />
                   )}
                 </div>
               </div>
