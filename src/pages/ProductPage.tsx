@@ -6,6 +6,7 @@ import LiveDemo from '@/components/LiveDemo';
 import InteractiveAIBuilder from '@/components/InteractiveAIBuilder';
 import InteractiveAnalyticsDashboard from '@/components/InteractiveAnalyticsDashboard';
 import InteractiveCRM from '@/components/InteractiveCRM';
+import InteractiveSocialMedia from '@/components/InteractiveSocialMedia';
 import { 
   Brain, 
   Workflow, 
@@ -21,7 +22,8 @@ import {
   Shield,
   TrendingUp,
   Target,
-  UserCheck
+  UserCheck,
+  Share2
 } from 'lucide-react';
 
 const ProductPage = () => {
@@ -90,6 +92,19 @@ const ProductPage = () => {
         'Marketing campaign automation'
       ],
       demo: 'crm'
+    },
+    {
+      icon: Share2,
+      title: 'Social Media Management',
+      description: 'AI-powered social media automation and engagement',
+      details: [
+        'Multi-platform publishing',
+        'Content generation & scheduling',
+        'Audience engagement automation',
+        'Performance analytics',
+        'Influencer collaboration tools'
+      ],
+      demo: 'social'
     }
   ];
 
@@ -257,6 +272,10 @@ const ProductPage = () => {
 
                   {feature.demo === 'crm' && (
                     <InteractiveCRM />
+                  )}
+
+                  {feature.demo === 'social' && (
+                    <InteractiveSocialMedia />
                   )}
                 </div>
               </div>
