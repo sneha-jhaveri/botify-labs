@@ -185,53 +185,59 @@ const ProductPage = () => {
       {/* Features Deep Dive */}
       <section className="py-24">
         <div className="container mx-auto px-6">
-          <div className="space-y-32">
+          <div className="text-center max-w-4xl mx-auto mb-20">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+              Complete{' '}
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                AI Platform
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Six powerful modules working together to automate your entire business workflow
+            </p>
+          </div>
+
+          <div className="space-y-24">
             {features.map((feature, index) => (
               <div
                 key={feature.title}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start ${
-                  index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-                }`}
+                className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center"
               >
                 {/* Content */}
                 <div className={`space-y-8 ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
                   <div className="space-y-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow">
-                        <feature.icon className="w-7 h-7 text-white" />
+                    <div className="flex items-start space-x-4">
+                      <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow flex-shrink-0">
+                        <feature.icon className="w-8 h-8 text-white" />
                       </div>
-                      <div>
-                        <h3 className="text-3xl lg:text-4xl font-bold text-foreground">
+                      <div className="flex-1">
+                        <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">
                           {feature.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground font-medium mt-1">
-                          Enterprise Ready
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          {feature.description}
                         </p>
                       </div>
                     </div>
 
-                    <p className="text-lg text-muted-foreground leading-relaxed">
-                      {feature.description}
-                    </p>
-
                     {/* Feature Details */}
-                    <div className="space-y-3">
+                    <div className="grid grid-cols-1 gap-3 pl-20">
                       {feature.details.map((detail, detailIndex) => (
                         <div key={detailIndex} className="flex items-center space-x-3">
-                          <CheckCircle2 className="w-5 h-5 text-primary" />
+                          <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
                           <span className="text-foreground">{detail}</span>
                         </div>
                       ))}
                     </div>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                      <Button variant="default" size="lg" className="group">
-                        <span>Try {feature.title}</span>
+                    <div className="flex flex-col sm:flex-row gap-3 pl-20">
+                      <Button variant="default" size="lg" className="group flex-1 sm:flex-none">
+                        <span>Try {feature.title.split(' ')[0]}</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                       
-                      <Button variant="outline" size="lg" className="group">
+                      <Button variant="outline" size="lg" className="group flex-1 sm:flex-none">
                         <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
                         <span>Watch Demo</span>
                       </Button>
@@ -241,42 +247,46 @@ const ProductPage = () => {
 
                 {/* Interactive Demo */}
                 <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                  {feature.demo === 'workflow' && (
-                    <WorkflowBuilder isDemo={true} />
-                  )}
-                  
-                  {feature.demo === 'channels' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <LiveDemo
-                        type="chat"
-                        title="Web Chat Demo"
-                        description="Try our banking assistant"
-                        industry="banking"
-                      />
-                      <LiveDemo
-                        type="whatsapp"
-                        title="WhatsApp Bot"
-                        description="Real estate lead qualification"
-                        industry="realestate"
-                      />
+                  <div className="bg-gradient-ai backdrop-blur-sm border border-primary/20 rounded-2xl p-6 shadow-glow">
+                    <div className="h-[400px] lg:h-[500px] overflow-hidden rounded-xl">
+                      {feature.demo === 'workflow' && (
+                        <WorkflowBuilder isDemo={true} />
+                      )}
+                      
+                      {feature.demo === 'channels' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                          <LiveDemo
+                            type="chat"
+                            title="Web Chat Demo"
+                            description="Try our banking assistant"
+                            industry="banking"
+                          />
+                          <LiveDemo
+                            type="whatsapp"
+                            title="WhatsApp Bot"
+                            description="Real estate lead qualification"
+                            industry="realestate"
+                          />
+                        </div>
+                      )}
+
+                      {feature.demo === 'builder' && (
+                        <InteractiveAIBuilder />
+                      )}
+
+                      {feature.demo === 'analytics' && (
+                        <InteractiveAnalyticsDashboard />
+                      )}
+
+                      {feature.demo === 'crm' && (
+                        <InteractiveCRM />
+                      )}
+
+                      {feature.demo === 'social' && (
+                        <InteractiveSocialMedia />
+                      )}
                     </div>
-                  )}
-
-                  {feature.demo === 'builder' && (
-                    <InteractiveAIBuilder />
-                  )}
-
-                  {feature.demo === 'analytics' && (
-                    <InteractiveAnalyticsDashboard />
-                  )}
-
-                  {feature.demo === 'crm' && (
-                    <InteractiveCRM />
-                  )}
-
-                  {feature.demo === 'social' && (
-                    <InteractiveSocialMedia />
-                  )}
+                  </div>
                 </div>
               </div>
             ))}
