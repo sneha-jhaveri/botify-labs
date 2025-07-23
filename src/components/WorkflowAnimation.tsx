@@ -126,15 +126,14 @@ const WorkflowAnimation = () => {
           
           return prev + 1;
         } else {
-          setIsCompleted(true);
+          // Reset without completion screen
           setTimeout(() => {
             setActiveStep(0);
             setConnections([]);
-            setIsCompleted(false);
             setExecutingActions([]);
             setDataStream([]);
-          }, 3000);
-          return prev;
+          }, 1000);
+          return 0;
         }
       });
     }, 2000);
@@ -153,11 +152,10 @@ const WorkflowAnimation = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-96 bg-gradient-to-br from-slate-900/50 to-indigo-900/30 rounded-3xl border border-primary/20 overflow-hidden">
-      {/* Neural Network Background */}
+    <div className="relative w-full h-96 rounded-3xl border border-primary/20 overflow-hidden bg-transparent">
+      {/* Minimal Neural Network Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 via-blue-900/20 to-cyan-900/20 animate-pulse" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/10 via-blue-900/10 to-cyan-900/10" />
       </div>
       
       {/* AI Brain Center */}
@@ -324,34 +322,6 @@ const WorkflowAnimation = () => {
         );
       })}
 
-      {/* AI Completion Effect */}
-      {isCompleted && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-xl border border-green-500/30 rounded-3xl p-8 text-center animate-scale-in">
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <Sparkles className="w-8 h-8 text-green-400 animate-pulse" />
-              <Brain className="w-12 h-12 text-green-400 animate-bounce" />
-              <Sparkles className="w-8 h-8 text-green-400 animate-pulse" />
-            </div>
-            <h3 className="text-2xl font-bold text-green-400 mb-2">AI Workflow Complete!</h3>
-            <p className="text-green-300 text-sm mb-4">Customer issue resolved automatically</p>
-            <div className="flex items-center justify-center space-x-4 text-xs text-green-200">
-              <div className="flex items-center space-x-1">
-                <Clock className="w-3 h-3" />
-                <span>2.4s execution</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <TrendingUp className="w-3 h-3" />
-                <span>97% satisfaction</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Users className="w-3 h-3" />
-                <span>VIP support</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Neural Activity Progress */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-64">
