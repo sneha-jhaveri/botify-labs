@@ -3,6 +3,7 @@ import Navigation from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import LiveDemo from '@/components/LiveDemo';
 import WorkflowBuilder from '@/components/WorkflowBuilder';
+import OrchestrationAnimation from '@/components/OrchestrationAnimation';
 import { 
   Play, 
   MessageSquare, 
@@ -339,6 +340,31 @@ const DemosPage = () => {
               )}
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* AI Orchestration Demos */}
+      <section className="py-24 bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+              AI{' '}
+              <span className="bg-gradient-secondary bg-clip-text text-transparent">
+                Orchestration
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Watch how AI intelligently orchestrates customer journeys across different industries, 
+              making real-time decisions based on customer intent and behavior
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <OrchestrationAnimation industry="banking" />
+            <OrchestrationAnimation industry="realestate" />
+            <OrchestrationAnimation industry="ecommerce" />
+            <OrchestrationAnimation industry="travel" />
+          </div>
         </div>
       </section>
 
