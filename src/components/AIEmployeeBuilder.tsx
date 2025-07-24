@@ -35,42 +35,42 @@ const AIEmployeeBuilder = () => {
 
   const buildSteps: BuildStep[] = [
     {
-      id: 'personality',
-      title: 'AI Personality',
-      description: 'Defining communication style and expertise',
+      id: 'persona',
+      title: 'Define Persona',
+      description: 'Setting personality, tone, and communication style',
       icon: User,
       color: 'from-blue-500 to-cyan-500',
       duration: 2000
     },
     {
-      id: 'training',
-      title: 'Neural Training',
-      description: 'Processing knowledge base and learning patterns',
+      id: 'knowledge',
+      title: 'Add Knowledge & SOPs',
+      description: 'Training on company knowledge base and procedures',
       icon: Brain,
       color: 'from-purple-500 to-pink-500',
       duration: 3000
     },
     {
-      id: 'channels',
-      title: 'Channel Setup',
-      description: 'Configuring multi-channel communication',
-      icon: MessageSquare,
+      id: 'abilities',
+      title: 'Attach Abilities',
+      description: 'Configuring AI capabilities and skills',
+      icon: Zap,
       color: 'from-green-500 to-emerald-500',
       duration: 2500
     },
     {
-      id: 'integration',
-      title: 'System Integration',
-      description: 'Connecting to your business tools',
+      id: 'access',
+      title: 'Configure Access & Tools',
+      description: 'Setting up permissions and integrating tools',
       icon: Settings,
       color: 'from-orange-500 to-red-500',
       duration: 2000
     },
     {
-      id: 'deployment',
-      title: 'AI Deployment',
-      description: 'Going live and ready to serve customers',
-      icon: Sparkles,
+      id: 'workflow',
+      title: 'Connect to Workflow',
+      description: 'Integrating into business processes and automation',
+      icon: ArrowRight,
       color: 'from-indigo-500 to-purple-500',
       duration: 1500
     }
