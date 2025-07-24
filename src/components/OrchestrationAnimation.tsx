@@ -48,6 +48,7 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [customerInterested, setCustomerInterested] = useState<boolean | null>(null);
+  const [animationCycle, setAnimationCycle] = useState(0);
 
   const industryConfigs = {
     banking: {
@@ -497,11 +498,11 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
                 if (nextIndex === nextSteps.length - 1) {
                   setTimeout(() => setIsAnimating(false), 1000);
                 }
-              }, (nextIndex + 1) * 2000);
+              }, (nextIndex + 1) * 1500);
             });
-          }, 2000);
+          }, 1500);
         } else {
-          setTimeout(() => animateStep(stepIndex + 1), 2000);
+          setTimeout(() => animateStep(stepIndex + 1), 1500);
         }
       }
     };
@@ -510,10 +511,31 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
   };
 
   const resetAnimation = () => {
-    setIsAnimating(false);
     setCurrentStep(0);
+    setIsAnimating(true);
     setCustomerInterested(null);
+    setAnimationCycle(prev => prev + 1);
   };
+
+  // Auto-start animation on mount and restart when complete
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      startAnimation();
+    }, 1000 + (animationCycle * 500)); // Stagger different industries
+
+    return () => clearTimeout(timer);
+  }, [animationCycle]);
+
+  // Auto-restart animation every 15 seconds
+  useEffect(() => {
+    if (!isAnimating) {
+      const restartTimer = setTimeout(() => {
+        resetAnimation();
+      }, 3000);
+      
+      return () => clearTimeout(restartTimer);
+    }
+  }, [isAnimating]);
 
   const getStepStatus = (stepIndex: number): 'pending' | 'active' | 'completed' => {
     if (stepIndex < currentStep) return 'completed';
@@ -536,24 +558,35 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
   const steps = getFullSteps();
 
   return (
-    <div className="bg-gradient-ai backdrop-blur-sm border border-primary/20 rounded-xl p-6">
-      <div className="mb-6">
+    <div className="bg-gradient-to-br from-muted/30 to-background border border-border/50 rounded-2xl overflow-hidden">
+      {/* Header */}
+      <div className={`p-6 bg-gradient-to-r ${config.color} text-white relative`}>
         <h3 className="text-xl font-bold mb-2">{config.title}</h3>
-        <p className="text-muted-foreground text-sm mb-4">{config.description}</p>
+        <p className="text-white/90 text-sm mb-4">{config.description}</p>
         
-        <div className="flex gap-2">
-          <Button 
+        {/* Live indicator */}
+        <div className="flex items-center space-x-2 mb-4">
+          <div className={`w-3 h-3 rounded-full ${isAnimating ? 'bg-green-400 animate-pulse' : 'bg-white/40'}`}></div>
+          <span className="text-sm text-white/90">
+            {isAnimating ? 'Live Demo Running' : 'Demo Paused'}
+          </span>
+        </div>
+        
+        <div className="flex space-x-3">
+          <Button
             onClick={startAnimation}
             disabled={isAnimating}
+            variant="secondary"
             size="sm"
-            variant="cta"
+            className="bg-white/20 hover:bg-white/30 text-white border-white/30"
           >
-            {isAnimating ? 'Running...' : 'Start Journey'}
+            {isAnimating ? 'Running...' : 'Restart Journey'}
           </Button>
-          <Button 
+          <Button
             onClick={resetAnimation}
-            size="sm"
             variant="outline"
+            size="sm"
+            className="border-white/30 text-white hover:bg-white/10"
           >
             Reset
           </Button>
@@ -561,95 +594,97 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
       </div>
 
       {/* Steps Visualization - Horizontal Layout */}
-      <div className="overflow-x-auto pb-4">
-        <div className="flex items-start space-x-6 min-w-max">
-          {steps.map((step, index) => {
-            const status = getStepStatus(index);
-            const isDecisionPoint = index === 2 && customerInterested !== null;
-            
-            return (
-              <div key={`${step.id}-${index}`} className="flex flex-col items-center min-w-[180px]">
-                {/* Step Indicator */}
-                <div className={`
-                  w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-500 mb-3
-                  ${getStepColor(step.type, status)}
-                `}>
-                  <step.icon className="w-6 h-6" />
-                </div>
-                
-                {/* Platform/Channel Indicator */}
-                {step.channel && (
-                  <div className={`flex items-center space-x-1 bg-muted/10 rounded-full px-3 py-1 mb-2 transition-all duration-500 ${
-                    status === 'active' ? 'ring-2 ring-primary/20 bg-primary/5' : ''
-                  }`}>
-                    <step.channel.icon className={`w-4 h-4 ${step.channel.color}`} />
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {step.channel.name}
-                    </span>
+      <div className="p-6">
+        <div className="overflow-x-auto pb-4">
+          <div className="flex items-start space-x-6 min-w-max">
+            {steps.map((step, index) => {
+              const status = getStepStatus(index);
+              const isDecisionPoint = index === 2 && customerInterested !== null;
+              
+              return (
+                <div key={`${step.id}-${index}`} className="flex flex-col items-center min-w-[180px] relative">
+                  {/* Step Indicator */}
+                  <div className={`
+                    w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-500 mb-3
+                    ${getStepColor(step.type, status)}
+                  `}>
+                    <step.icon className="w-6 h-6" />
                   </div>
-                )}
-                
-                {/* Step Content */}
-                <div className="text-center">
-                  <div className="flex items-center justify-center space-x-2 mb-1">
-                    <h4 className={`font-semibold text-sm ${
-                      status === 'active' ? 'text-primary' : 
-                      status === 'completed' ? 'text-foreground' : 'text-muted-foreground'
+                  
+                  {/* Platform/Channel Indicator */}
+                  {step.channel && (
+                    <div className={`flex items-center space-x-1 bg-muted/10 rounded-full px-3 py-1 mb-2 transition-all duration-500 ${
+                      status === 'active' ? 'ring-2 ring-primary/20 bg-primary/5' : ''
                     }`}>
-                      {step.title}
-                    </h4>
-                    
-                    {status === 'completed' && (
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
-                    )}
-                    
-                    {status === 'active' && (
-                      <Clock className="w-4 h-4 text-primary animate-spin" />
-                    )}
-                  </div>
-                  
-                  <p className="text-xs text-muted-foreground leading-tight px-2">{step.description}</p>
-                  
-                  {/* Decision Indicator */}
-                  {isDecisionPoint && (
-                    <div className="mt-2 inline-flex items-center space-x-1 bg-secondary/10 rounded-full px-2 py-1">
-                      <AlertCircle className="w-3 h-3 text-secondary" />
-                      <span className="text-xs text-secondary font-medium">
-                        {customerInterested ? 'Interested' : 'Not Ready'}
+                      <step.channel.icon className={`w-4 h-4 ${step.channel.color}`} />
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {step.channel.name}
                       </span>
                     </div>
                   )}
-                </div>
-                
-                {/* Arrow Connector */}
-                {index < steps.length - 1 && (
-                  <div className={`absolute top-6 left-[calc(50%+90px)] transform -translate-y-1/2 transition-all duration-500 ${
-                    status === 'completed' ? 'text-primary' : 'text-muted-foreground'
-                  }`}>
-                    <ArrowRight className="w-5 h-5" />
+                  
+                  {/* Step Content */}
+                  <div className="text-center">
+                    <div className="flex items-center justify-center space-x-2 mb-1">
+                      <h4 className={`font-semibold text-sm ${
+                        status === 'active' ? 'text-primary' : 
+                        status === 'completed' ? 'text-foreground' : 'text-muted-foreground'
+                      }`}>
+                        {step.title}
+                      </h4>
+                      
+                      {status === 'completed' && (
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      )}
+                      
+                      {status === 'active' && (
+                        <Clock className="w-4 h-4 text-primary animate-spin" />
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground leading-tight px-2">{step.description}</p>
+                    
+                    {/* Decision Indicator */}
+                    {isDecisionPoint && (
+                      <div className="mt-2 inline-flex items-center space-x-1 bg-secondary/10 rounded-full px-2 py-1">
+                        <AlertCircle className="w-3 h-3 text-secondary" />
+                        <span className="text-xs text-secondary font-medium">
+                          {customerInterested ? 'Interested' : 'Not Ready'}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Results Summary */}
-      {!isAnimating && customerInterested !== null && (
-        <div className="mt-6 p-4 bg-muted/20 rounded-lg">
-          <div className="flex items-center space-x-2 mb-2">
-            <CheckCircle2 className="w-5 h-5 text-primary" />
-            <h4 className="font-semibold text-sm">Journey Complete</h4>
+                  
+                  {/* Arrow Connector */}
+                  {index < steps.length - 1 && (
+                    <div className={`absolute top-6 left-[calc(50%+90px)] transform -translate-y-1/2 transition-all duration-500 ${
+                      status === 'completed' ? 'text-primary' : 'text-muted-foreground'
+                    }`}>
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-          <p className="text-xs text-muted-foreground">
-            {customerInterested 
-              ? 'Customer was routed to conversion flow with personalized offers'
-              : 'Customer entered nurturing sequence for future engagement'
-            }
-          </p>
         </div>
-      )}
+
+        {/* Results Summary */}
+        {!isAnimating && customerInterested !== null && (
+          <div className="mt-6 p-4 bg-muted/20 rounded-lg">
+            <div className="flex items-center space-x-2 mb-2">
+              <CheckCircle2 className="w-5 h-5 text-primary" />
+              <h4 className="font-semibold text-sm">Journey Complete</h4>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {customerInterested 
+                ? 'Customer was routed to conversion flow with personalized offers'
+                : 'Customer entered nurturing sequence for future engagement'
+              }
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
