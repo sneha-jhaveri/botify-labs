@@ -24,238 +24,531 @@ import {
   Activity
 } from 'lucide-react';
 
-// Advanced Animation Component
-const AnimatedFeatureDemo = ({ feature, isActive, onActivate }: { 
+// Intelligent Animation Component with Advanced Interactions
+const IntelligentFeatureDemo = ({ feature, isActive, onActivate }: { 
   feature: any; 
   isActive: boolean; 
   onActivate: () => void;
 }) => {
   const [animationStep, setAnimationStep] = useState(0);
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [dataFlow, setDataFlow] = useState<Array<{ id: number; progress: number; speed: number }>>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // Mouse tracking for interactive effects
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePosition({
+        x: ((e.clientX - rect.left) / rect.width) * 100,
+        y: ((e.clientY - rect.top) / rect.height) * 100
+      });
+    }
+  };
+
+  // Initialize data flow animations
   useEffect(() => {
-    if (isActive) {
-      // Generate particles for active animation
-      const newParticles = Array.from({ length: 12 }, (_, i) => ({
+    if (isActive || isHovered) {
+      const flows = Array.from({ length: 8 }, (_, i) => ({
         id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        delay: Math.random() * 2
+        progress: Math.random() * 100,
+        speed: 0.5 + Math.random() * 2
       }));
-      setParticles(newParticles);
+      setDataFlow(flows);
       
-      // Animation sequence
       const interval = setInterval(() => {
-        setAnimationStep(prev => (prev + 1) % 4);
-      }, 1500);
+        setDataFlow(prev => prev.map(flow => ({
+          ...flow,
+          progress: (flow.progress + flow.speed) % 100
+        })));
+        setAnimationStep(prev => (prev + 1) % 6);
+      }, 100);
       
       return () => clearInterval(interval);
     }
-  }, [isActive]);
+  }, [isActive, isHovered]);
 
-  const getAnimationContent = () => {
+  const getIntelligentAnimation = () => {
     switch (feature.animationType) {
       case 'ai-employee':
         return (
-          <div className="relative w-full h-64 bg-gradient-to-br from-primary/5 to-primary/20 rounded-2xl overflow-hidden">
-            {/* Neural Network Visualization */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="grid grid-cols-3 gap-8">
-                {[...Array(9)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`w-4 h-4 rounded-full transition-all duration-1000 ${
-                      isActive ? 'bg-primary animate-pulse' : 'bg-muted'
-                    }`}
-                    style={{ 
-                      animationDelay: `${i * 200}ms`,
-                      transform: isActive ? 'scale(1.2)' : 'scale(0.8)'
-                    }}
-                  />
+          <div className="relative w-full h-80 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/20 rounded-3xl overflow-hidden">
+            {/* Advanced Neural Network */}
+            <div className="absolute inset-0">
+              {/* Input Layer */}
+              <div className="absolute left-8 top-1/2 transform -translate-y-1/2 space-y-4">
+                {['Voice', 'Text', 'Image'].map((input, i) => (
+                  <div key={input} className="flex items-center space-x-3">
+                    <div className={`w-3 h-3 rounded-full transition-all duration-500 ${
+                      isActive || isHovered ? 'bg-primary scale-110 shadow-glow' : 'bg-muted'
+                    }`} style={{ animationDelay: `${i * 200}ms` }} />
+                    <span className="text-xs text-muted-foreground">{input}</span>
+                  </div>
                 ))}
               </div>
+
+              {/* Hidden Layers - Dynamic Neural Network */}
+              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="grid grid-cols-3 gap-6">
+                  {[...Array(12)].map((_, i) => {
+                    const distance = Math.sqrt(
+                      Math.pow(mousePosition.x - 50, 2) + Math.pow(mousePosition.y - 50, 2)
+                    );
+                    const scale = isHovered ? Math.max(0.8, 1.5 - distance / 100) : 1;
+                    
+                    return (
+                      <div
+                        key={i}
+                        className={`w-4 h-4 rounded-full transition-all duration-300 ${
+                          isActive || isHovered ? 'bg-primary' : 'bg-muted'
+                        }`}
+                        style={{ 
+                          transform: `scale(${scale})`,
+                          opacity: isHovered ? Math.max(0.3, 1 - distance / 150) : 1,
+                          animationDelay: `${i * 100}ms`
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Output Layer */}
+              <div className="absolute right-8 top-1/2 transform -translate-y-1/2 space-y-4">
+                {['Response', 'Action', 'Learn'].map((output, i) => (
+                  <div key={output} className="flex items-center space-x-3">
+                    <span className="text-xs text-muted-foreground">{output}</span>
+                    <div className={`w-3 h-3 rounded-full transition-all duration-500 ${
+                      (isActive || isHovered) && animationStep > i ? 'bg-primary scale-110 shadow-glow' : 'bg-muted'
+                    }`} style={{ animationDelay: `${i * 300 + 1000}ms` }} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Dynamic Connections */}
+              <svg className="absolute inset-0 w-full h-full">
+                {dataFlow.map((flow, i) => (
+                  <g key={flow.id}>
+                    {/* Animated connection lines */}
+                    <path
+                      d={`M ${20 + i * 5} ${40 + i * 8} Q ${50} ${30 + i * 6} ${80 - i * 5} ${60 - i * 8}`}
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      fill="none"
+                      className={`text-primary/40 transition-all duration-500 ${
+                        isActive || isHovered ? 'opacity-100' : 'opacity-20'
+                      }`}
+                      strokeDasharray="8,4"
+                      strokeDashoffset={-flow.progress * 2}
+                    />
+                    {/* Data packets */}
+                    <circle
+                      r="3"
+                      fill="currentColor"
+                      className="text-primary"
+                      opacity={isActive || isHovered ? 0.8 : 0.3}
+                    >
+                      <animateMotion dur="3s" repeatCount="indefinite">
+                        <path d={`M ${20 + i * 5} ${40 + i * 8} Q ${50} ${30 + i * 6} ${80 - i * 5} ${60 - i * 8}`} />
+                      </animateMotion>
+                    </circle>
+                  </g>
+                ))}
+              </svg>
+
+              {/* AI Processing Indicator */}
+              {(isActive || isHovered) && (
+                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-background/90 backdrop-blur-sm rounded-full px-4 py-2 text-xs">
+                  <div className="flex items-center space-x-2">
+                    <Brain className="w-3 h-3 text-primary animate-pulse" />
+                    <span>Processing: {Math.round(animationStep * 16.67)}%</span>
+                  </div>
+                </div>
+              )}
             </div>
-            
-            {/* Connecting Lines */}
-            <svg className="absolute inset-0 w-full h-full">
-              {[...Array(6)].map((_, i) => (
-                <line
-                  key={i}
-                  x1={`${20 + (i % 3) * 30}%`}
-                  y1="30%"
-                  x2={`${35 + (i % 2) * 30}%`}
-                  y2="70%"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className={`text-primary/30 transition-all duration-1000 ${
-                    isActive ? 'opacity-100' : 'opacity-20'
-                  }`}
-                  strokeDasharray="10,5"
-                  style={{
-                    animationDelay: `${i * 300}ms`
-                  }}
-                />
-              ))}
-            </svg>
           </div>
         );
         
       case 'workflow':
         return (
-          <div className="relative w-full h-64 bg-gradient-to-br from-secondary/5 to-secondary/20 rounded-2xl overflow-hidden">
-            {/* Workflow Steps */}
-            <div className="absolute inset-0 flex items-center justify-around p-8">
-              {['Start', 'Process', 'AI Logic', 'Output'].map((step, i) => (
-                <div key={step} className="flex flex-col items-center">
-                  <div
-                    className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-1000 ${
-                      isActive && animationStep >= i
-                        ? 'border-secondary bg-secondary/20 scale-110'
-                        : 'border-muted bg-background'
-                    }`}
-                  >
-                    <div className={`w-2 h-2 rounded-full transition-colors duration-500 ${
-                      isActive && animationStep >= i ? 'bg-secondary' : 'bg-muted'
-                    }`} />
-                  </div>
-                  <span className="text-xs mt-2 text-muted-foreground">{step}</span>
+          <div className="relative w-full h-80 bg-gradient-to-br from-secondary/5 via-secondary/10 to-secondary/20 rounded-3xl overflow-hidden">
+            {/* Intelligent Workflow Builder */}
+            <div className="absolute inset-0 p-6">
+              {/* Workflow Nodes */}
+              <div className="flex justify-between items-center h-full">
+                {[
+                  { icon: Zap, label: 'Trigger', type: 'start' },
+                  { icon: Brain, label: 'AI Process', type: 'process' },
+                  { icon: Network, label: 'Decision', type: 'decision' },
+                  { icon: CheckCircle2, label: 'Action', type: 'action' },
+                  { icon: TrendingUp, label: 'Result', type: 'end' }
+                ].map((node, i) => {
+                  const isProcessing = (isActive || isHovered) && animationStep >= i;
+                  const hoverDistance = Math.abs(mousePosition.x - (i * 25 + 10));
+                  const hoverScale = isHovered ? Math.max(1, 1.3 - hoverDistance / 50) : 1;
                   
-                  {/* Arrow to next step */}
-                  {i < 3 && (
-                    <ArrowRight 
-                      className={`w-4 h-4 mt-4 transition-all duration-500 ${
-                        isActive && animationStep > i 
-                          ? 'text-secondary translate-x-1' 
-                          : 'text-muted'
-                      }`}
-                      style={{ transform: 'rotate(90deg)' }}
-                    />
-                  )}
+                  return (
+                    <div key={node.label} className="flex flex-col items-center space-y-3">
+                      <div
+                        className={`w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 cursor-pointer ${
+                          isProcessing 
+                            ? 'border-secondary bg-secondary/20 scale-110 shadow-glow' 
+                            : 'border-muted bg-background hover:border-secondary/50'
+                        }`}
+                        style={{ transform: `scale(${hoverScale})` }}
+                      >
+                        <node.icon className={`w-6 h-6 transition-all duration-300 ${
+                          isProcessing ? 'text-secondary' : 'text-muted-foreground'
+                        }`} />
+                      </div>
+                      <span className="text-xs text-center text-muted-foreground font-medium">
+                        {node.label}
+                      </span>
+                      
+                      {/* Status indicator */}
+                      <div className={`w-2 h-2 rounded-full transition-all duration-500 ${
+                        isProcessing ? 'bg-secondary animate-pulse' : 'bg-muted'
+                      }`} />
+                      
+                      {/* Connection to next node */}
+                      {i < 4 && (
+                        <div className="absolute top-1/2 transform -translate-y-1/2" 
+                             style={{ left: `${(i + 1) * 20 - 2}%` }}>
+                          <ArrowRight 
+                            className={`w-6 h-6 transition-all duration-500 ${
+                              isProcessing ? 'text-secondary scale-110' : 'text-muted'
+                            }`}
+                          />
+                          {/* Data flow animation */}
+                          {isProcessing && (
+                            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-secondary/30 overflow-hidden">
+                              <div className="w-4 h-full bg-secondary animate-[slide-in-right_1s_ease-in-out_infinite]" />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Performance Metrics */}
+              {(isActive || isHovered) && (
+                <div className="absolute bottom-4 right-4 bg-background/90 backdrop-blur-sm rounded-xl p-3 border border-secondary/20">
+                  <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div className="text-center">
+                      <div className="text-secondary font-bold">{Math.round(animationStep * 2.5)}ms</div>
+                      <div className="text-muted-foreground">Latency</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-secondary font-bold">99.{95 + animationStep}%</div>
+                      <div className="text-muted-foreground">Success</div>
+                    </div>
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         );
         
       case 'multi-channel':
         return (
-          <div className="relative w-full h-64 bg-gradient-to-br from-accent/5 to-accent/20 rounded-2xl overflow-hidden">
-            {/* Channel Hub */}
+          <div className="relative w-full h-80 bg-gradient-to-br from-accent/5 via-accent/10 to-accent/20 rounded-3xl overflow-hidden">
+            {/* Multi-Channel Orchestration */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative">
-                {/* Central AI Hub */}
-                <div className={`w-16 h-16 rounded-full bg-gradient-to-r from-accent to-accent-glow flex items-center justify-center transition-all duration-1000 ${
-                  isActive ? 'scale-110 shadow-glow' : 'scale-100'
+              <div className="relative w-64 h-64">
+                {/* Central AI Orchestrator */}
+                <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-gradient-to-r from-accent to-accent-glow flex items-center justify-center transition-all duration-1000 ${
+                  isActive || isHovered ? 'scale-110 shadow-glow' : 'scale-100'
                 }`}>
-                  <Bot className="w-8 h-8 text-white" />
+                  <Bot className="w-10 h-10 text-white" />
+                  
+                  {/* Pulse rings */}
+                  {(isActive || isHovered) && (
+                    <>
+                      <div className="absolute inset-0 rounded-full border-2 border-accent/30 animate-ping" />
+                      <div className="absolute inset-0 rounded-full border border-accent/20 animate-ping" style={{ animationDelay: '0.5s' }} />
+                    </>
+                  )}
                 </div>
                 
-                {/* Channel Icons */}
+                {/* Channel Nodes */}
                 {[
-                  { icon: MessageSquare, angle: 0, label: 'Chat' },
-                  { icon: PhoneCall, angle: 90, label: 'Voice' },
-                  { icon: Mail, angle: 180, label: 'Email' },
-                  { icon: Globe, angle: 270, label: 'Web' }
-                ].map(({ icon: Icon, angle, label }, i) => (
-                  <div
-                    key={label}
-                    className={`absolute w-10 h-10 rounded-full bg-background border-2 border-accent/30 flex items-center justify-center transition-all duration-1000 ${
-                      isActive ? 'scale-100 opacity-100' : 'scale-75 opacity-50'
-                    }`}
-                    style={{
-                      transform: `rotate(${angle}deg) translateY(-60px) rotate(-${angle}deg) ${
-                        isActive ? 'scale(1.1)' : 'scale(0.9)'
-                      }`,
-                      animationDelay: `${i * 200}ms`
-                    }}
-                  >
-                    <Icon className="w-5 h-5 text-accent" />
-                  </div>
-                ))}
+                  { icon: MessageSquare, label: 'WhatsApp', angle: 0, color: '#25D366' },
+                  { icon: PhoneCall, label: 'Voice', angle: 60, color: '#FF6B6B' },
+                  { icon: Mail, label: 'Email', angle: 120, color: '#4ECDC4' },
+                  { icon: Globe, label: 'Web', angle: 180, color: '#45B7D1' },
+                  { icon: Bot, label: 'Telegram', angle: 240, color: '#0088CC' },
+                  { icon: Network, label: 'API', angle: 300, color: '#96CEB4' }
+                ].map(({ icon: Icon, label, angle, color }, i) => {
+                  const isChannelActive = (isActive || isHovered) && (animationStep % 6) === i;
+                  const hoverEffect = isHovered ? 
+                    Math.max(0.8, 1.2 - Math.abs(mousePosition.x - 50) / 100) : 1;
+                  
+                  return (
+                    <div key={label}>
+                      {/* Channel Node */}
+                      <div
+                        className={`absolute w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-500 cursor-pointer ${
+                          isChannelActive ? 'scale-110 shadow-lg' : 'scale-100'
+                        }`}
+                        style={{
+                          transform: `rotate(${angle}deg) translateY(-80px) rotate(-${angle}deg) scale(${hoverEffect})`,
+                          backgroundColor: isChannelActive ? color + '20' : 'white',
+                          borderColor: isChannelActive ? color : '#e5e7eb'
+                        }}
+                      >
+                        <Icon 
+                          className="w-6 h-6" 
+                          style={{ color: isChannelActive ? color : '#6b7280' }}
+                        />
+                      </div>
+                      
+                      {/* Channel Label */}
+                      <div
+                        className="absolute text-xs font-medium transition-all duration-300"
+                        style={{
+                          transform: `rotate(${angle}deg) translateY(-100px) rotate(-${angle}deg)`,
+                          color: isChannelActive ? color : '#6b7280'
+                        }}
+                      >
+                        {label}
+                      </div>
+                      
+                      {/* Data Connection */}
+                      {(isActive || isHovered) && (
+                        <svg 
+                          className="absolute top-1/2 left-1/2 w-40 h-40 transform -translate-x-1/2 -translate-y-1/2"
+                          style={{ transform: `rotate(${angle}deg)` }}
+                        >
+                          <line
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="-60"
+                            stroke={color}
+                            strokeWidth="2"
+                            opacity={isChannelActive ? 0.8 : 0.2}
+                            strokeDasharray="6,4"
+                            className="transition-all duration-500"
+                          >
+                            {isChannelActive && (
+                              <animate
+                                attributeName="stroke-dashoffset"
+                                values="0;-20"
+                                dur="1s"
+                                repeatCount="indefinite"
+                              />
+                            )}
+                          </line>
+                        </svg>
+                      )}
+                    </div>
+                  );
+                })}
                 
-                {/* Pulse Rings */}
-                {isActive && (
-                  <>
-                    <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-accent/20 animate-ping" />
-                    <div className="absolute inset-0 w-16 h-16 rounded-full border border-accent/10 animate-ping" style={{ animationDelay: '0.5s' }} />
-                  </>
-                )}
+                {/* Message Flow Indicators */}
+                {(isActive || isHovered) && dataFlow.slice(0, 3).map((flow, i) => (
+                  <div
+                    key={flow.id}
+                    className="absolute w-2 h-2 bg-accent rounded-full opacity-60"
+                    style={{
+                      top: '50%',
+                      left: '50%',
+                      transform: `translate(-50%, -50%) rotate(${flow.progress * 3.6}deg) translateY(-${40 + i * 10}px)`
+                    }}
+                  />
+                ))}
               </div>
             </div>
+
+            {/* Channel Statistics */}
+            {(isActive || isHovered) && (
+              <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-xl p-3 border border-accent/20">
+                <div className="text-xs">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Activity className="w-3 h-3 text-accent" />
+                    <span className="text-accent font-bold">{6 + animationStep}</span>
+                    <span className="text-muted-foreground">Channels Active</span>
+                  </div>
+                  <div className="text-muted-foreground">
+                    {Math.round(120 + animationStep * 15)} msg/min
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
         
       case 'dashboard':
         return (
-          <div className="relative w-full h-64 bg-gradient-to-br from-primary/5 to-primary/20 rounded-2xl overflow-hidden p-6">
-            {/* Dashboard Widgets */}
+          <div className="relative w-full h-80 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/20 rounded-3xl overflow-hidden p-6">
+            {/* Intelligent Dashboard */}
             <div className="grid grid-cols-2 gap-4 h-full">
               {[
-                { icon: TrendingUp, value: '↗ 24%', label: 'Growth' },
-                { icon: Users, value: '1.2K', label: 'Users' },
-                { icon: Activity, value: '99.9%', label: 'Uptime' },
-                { icon: Database, value: '2.5M', label: 'Records' }
-              ].map(({ icon: Icon, value, label }, i) => (
-                <div
-                  key={label}
-                  className={`bg-background/50 backdrop-blur-sm rounded-lg p-3 border border-primary/10 transition-all duration-1000 ${
-                    isActive ? 'transform scale-105 shadow-lg' : 'scale-95 opacity-70'
-                  }`}
-                  style={{ animationDelay: `${i * 150}ms` }}
-                >
-                  <Icon className={`w-5 h-5 mb-2 transition-colors duration-500 ${
-                    isActive ? 'text-primary' : 'text-muted-foreground'
-                  }`} />
-                  <div className={`text-lg font-bold transition-colors duration-500 ${
-                    isActive ? 'text-foreground' : 'text-muted-foreground'
-                  }`}>
-                    {value}
+                { 
+                  icon: TrendingUp, 
+                  title: 'Performance', 
+                  value: () => `${85 + animationStep * 2}%`,
+                  trend: '+12.5%',
+                  chart: 'line'
+                },
+                { 
+                  icon: Users, 
+                  title: 'Active Users', 
+                  value: () => `${1.2 + (animationStep * 0.1)}K`,
+                  trend: '+8.2%',
+                  chart: 'bar'
+                },
+                { 
+                  icon: Activity, 
+                  title: 'Response Time', 
+                  value: () => `${45 - animationStep}ms`,
+                  trend: '-15.3%',
+                  chart: 'area'
+                },
+                { 
+                  icon: Database, 
+                  title: 'Data Processed', 
+                  value: () => `${2.8 + (animationStep * 0.2)}M`,
+                  trend: '+22.1%',
+                  chart: 'donut'
+                }
+              ].map(({ icon: Icon, title, value, trend, chart }, i) => {
+                const isWidgetActive = (isActive || isHovered);
+                const hoverIntensity = isHovered ? 
+                  Math.max(0.5, 1.5 - Math.abs((mousePosition.x + mousePosition.y) / 2 - 50) / 50) : 1;
+                
+                return (
+                  <div
+                    key={title}
+                    className={`bg-background/50 backdrop-blur-sm rounded-xl p-4 border transition-all duration-500 cursor-pointer ${
+                      isWidgetActive ? 'border-primary/30 shadow-lg scale-105' : 'border-primary/10 scale-100'
+                    }`}
+                    style={{ 
+                      transform: `scale(${isHovered ? hoverIntensity : 1})`,
+                      opacity: isHovered ? hoverIntensity : 1
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <Icon className={`w-5 h-5 transition-all duration-300 ${
+                        isWidgetActive ? 'text-primary scale-110' : 'text-muted-foreground'
+                      }`} />
+                      <span className={`text-xs px-2 py-1 rounded-full transition-all duration-300 ${
+                        isWidgetActive ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
+                      }`}>
+                        {trend}
+                      </span>
+                    </div>
+                    
+                    <div className={`text-2xl font-bold mb-1 transition-all duration-300 ${
+                      isWidgetActive ? 'text-foreground' : 'text-muted-foreground'
+                    }`}>
+                      {value()}
+                    </div>
+                    
+                    <div className="text-xs text-muted-foreground mb-3">{title}</div>
+                    
+                    {/* Mini Chart Visualization */}
+                    <div className="h-8 relative overflow-hidden">
+                      {chart === 'line' && (
+                        <svg className="w-full h-full">
+                          <polyline
+                            points="0,6 8,4 16,7 24,3 32,5 40,2 48,6"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className={`transition-all duration-500 ${
+                              isWidgetActive ? 'text-primary opacity-100' : 'text-muted opacity-50'
+                            }`}
+                          />
+                        </svg>
+                      )}
+                      
+                      {chart === 'bar' && (
+                        <div className="flex items-end justify-between h-full space-x-1">
+                          {[3, 6, 4, 8, 5, 7, 6].map((height, idx) => (
+                            <div
+                              key={idx}
+                              className={`flex-1 rounded-t transition-all duration-500 ${
+                                isWidgetActive ? 'bg-primary' : 'bg-muted'
+                              }`}
+                              style={{ 
+                                height: `${height * 4}px`,
+                                animationDelay: `${idx * 100}ms`
+                              }}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">{label}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
+
+            {/* AI Insights Panel */}
+            {(isActive || isHovered) && (
+              <div className="absolute top-4 right-4 bg-background/95 backdrop-blur-sm rounded-xl p-3 border border-primary/20 max-w-48">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                  <span className="text-sm font-medium">AI Insights</span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Performance trending upward. Optimal response times detected.
+                </div>
+              </div>
+            )}
           </div>
         );
         
       default:
-        return <div className="w-full h-64 bg-muted/20 rounded-2xl" />;
+        return <div className="w-full h-80 bg-muted/20 rounded-3xl" />;
     }
   };
 
   return (
     <div 
+      ref={containerRef}
       className="relative cursor-pointer group"
       onClick={onActivate}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Animated particles */}
-      {isActive && particles.map(particle => (
-        <div
-          key={particle.id}
-          className="absolute w-1 h-1 bg-primary/40 rounded-full animate-ping"
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            animationDelay: `${particle.delay}s`
-          }}
-        />
-      ))}
-      
       {/* Main animation content */}
       <div className={`transition-all duration-500 ${isActive ? 'scale-105' : 'scale-100'}`}>
-        {getAnimationContent()}
+        {getIntelligentAnimation()}
       </div>
       
-      {/* Hover overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-        !isActive ? 'block' : 'hidden'
-      }`} />
+      {/* Interactive overlay effects */}
+      <div 
+        className="absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-300 pointer-events-none"
+        style={{
+          background: isHovered ? 
+            `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)` : 
+            'transparent'
+        }}
+      />
       
-      {/* Click to activate hint */}
-      {!isActive && (
+      {/* Status indicators */}
+      {!isActive && !isHovered && (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="bg-background/90 backdrop-blur-sm rounded-full px-4 py-2 text-sm text-foreground border border-primary/20">
-            Click to activate
+          <div className="bg-background/95 backdrop-blur-sm rounded-full px-6 py-3 text-sm text-foreground border border-primary/20 shadow-lg">
+            <div className="flex items-center space-x-2">
+              <Play className="w-4 h-4 text-primary" />
+              <span>Click to start intelligent demo</span>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {isActive && (
+        <div className="absolute top-4 left-4 bg-background/95 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-foreground border border-primary/20">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span>Live Demo Active</span>
           </div>
         </div>
       )}
@@ -460,7 +753,7 @@ const FeaturesSection = () => {
 
               {/* Advanced Interactive Demo */}
               <div className={`relative ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                <AnimatedFeatureDemo
+                <IntelligentFeatureDemo
                   feature={feature}
                   isActive={activeFeature === index}
                   onActivate={() => setActiveFeature(activeFeature === index ? null : index)}
