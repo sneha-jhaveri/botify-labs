@@ -560,26 +560,38 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
         </div>
       </div>
 
-      {/* Steps Visualization */}
-      <div className="space-y-4">
-        {steps.map((step, index) => {
-          const status = getStepStatus(index);
-          const isDecisionPoint = index === 2 && customerInterested !== null;
-          
-          return (
-            <div key={`${step.id}-${index}`} className="flex items-center space-x-4">
-              {/* Step Indicator */}
-              <div className={`
-                w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-500
-                ${getStepColor(step.type, status)}
-              `}>
-                <step.icon className="w-5 h-5" />
-              </div>
-              
-              {/* Step Content */}
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+      {/* Steps Visualization - Horizontal Layout */}
+      <div className="overflow-x-auto pb-4">
+        <div className="flex items-start space-x-6 min-w-max">
+          {steps.map((step, index) => {
+            const status = getStepStatus(index);
+            const isDecisionPoint = index === 2 && customerInterested !== null;
+            
+            return (
+              <div key={`${step.id}-${index}`} className="flex flex-col items-center min-w-[180px]">
+                {/* Step Indicator */}
+                <div className={`
+                  w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-500 mb-3
+                  ${getStepColor(step.type, status)}
+                `}>
+                  <step.icon className="w-6 h-6" />
+                </div>
+                
+                {/* Platform/Channel Indicator */}
+                {step.channel && (
+                  <div className={`flex items-center space-x-1 bg-muted/10 rounded-full px-3 py-1 mb-2 transition-all duration-500 ${
+                    status === 'active' ? 'ring-2 ring-primary/20 bg-primary/5' : ''
+                  }`}>
+                    <step.channel.icon className={`w-4 h-4 ${step.channel.color}`} />
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {step.channel.name}
+                    </span>
+                  </div>
+                )}
+                
+                {/* Step Content */}
+                <div className="text-center">
+                  <div className="flex items-center justify-center space-x-2 mb-1">
                     <h4 className={`font-semibold text-sm ${
                       status === 'active' ? 'text-primary' : 
                       status === 'completed' ? 'text-foreground' : 'text-muted-foreground'
@@ -596,43 +608,31 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
                     )}
                   </div>
                   
-                  {/* Platform/Channel Indicator */}
-                  {step.channel && (
-                    <div className={`flex items-center space-x-1 bg-muted/10 rounded-full px-2 py-1 transition-all duration-500 ${
-                      status === 'active' ? 'ring-2 ring-primary/20 bg-primary/5' : ''
-                    }`}>
-                      <step.channel.icon className={`w-3 h-3 ${step.channel.color}`} />
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {step.channel.name}
+                  <p className="text-xs text-muted-foreground leading-tight px-2">{step.description}</p>
+                  
+                  {/* Decision Indicator */}
+                  {isDecisionPoint && (
+                    <div className="mt-2 inline-flex items-center space-x-1 bg-secondary/10 rounded-full px-2 py-1">
+                      <AlertCircle className="w-3 h-3 text-secondary" />
+                      <span className="text-xs text-secondary font-medium">
+                        {customerInterested ? 'Interested' : 'Not Ready'}
                       </span>
                     </div>
                   )}
                 </div>
                 
-                <p className="text-xs text-muted-foreground mt-1">{step.description}</p>
-                
-                {/* Decision Indicator */}
-                {isDecisionPoint && (
-                  <div className="mt-2 inline-flex items-center space-x-1 bg-secondary/10 rounded-full px-2 py-1">
-                    <AlertCircle className="w-3 h-3 text-secondary" />
-                    <span className="text-xs text-secondary font-medium">
-                      Customer {customerInterested ? 'Interested' : 'Not Ready'}
-                    </span>
+                {/* Arrow Connector */}
+                {index < steps.length - 1 && (
+                  <div className={`absolute top-6 left-[calc(50%+90px)] transform -translate-y-1/2 transition-all duration-500 ${
+                    status === 'completed' ? 'text-primary' : 'text-muted-foreground'
+                  }`}>
+                    <ArrowRight className="w-5 h-5" />
                   </div>
                 )}
               </div>
-              
-              {/* Arrow Connector */}
-              {index < steps.length - 1 && (
-                <div className={`transition-all duration-500 ${
-                  status === 'completed' ? 'text-primary' : 'text-muted-foreground'
-                }`}>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       {/* Results Summary */}
