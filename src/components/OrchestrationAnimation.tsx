@@ -517,25 +517,7 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
     setAnimationCycle(prev => prev + 1);
   };
 
-  // Auto-start animation on mount and restart when complete
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      startAnimation();
-    }, 1000 + (animationCycle * 500)); // Stagger different industries
-
-    return () => clearTimeout(timer);
-  }, [animationCycle]);
-
-  // Auto-restart animation every 15 seconds
-  useEffect(() => {
-    if (!isAnimating) {
-      const restartTimer = setTimeout(() => {
-        resetAnimation();
-      }, 3000);
-      
-      return () => clearTimeout(restartTimer);
-    }
-  }, [isAnimating]);
+  // No auto-start - only manual interaction
 
   const getStepStatus = (stepIndex: number): 'pending' | 'active' | 'completed' => {
     if (stepIndex < currentStep) return 'completed';
