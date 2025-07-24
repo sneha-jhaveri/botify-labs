@@ -14,7 +14,15 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
-  Target
+  Target,
+  Instagram,
+  MessageCircle,
+  PhoneCall,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Globe,
+  Smartphone
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -25,6 +33,11 @@ interface OrchestrationStep {
   icon: React.ElementType;
   status: 'pending' | 'active' | 'completed';
   type: 'customer' | 'ai' | 'action';
+  channel?: {
+    name: string;
+    icon: React.ElementType;
+    color: string;
+  };
 }
 
 interface OrchestrationAnimationProps {
@@ -48,7 +61,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Customer asks about personal loan options',
           icon: MessageSquare,
           status: 'pending' as const,
-          type: 'customer' as const
+          type: 'customer' as const,
+          channel: {
+            name: 'WhatsApp',
+            icon: MessageCircle,
+            color: 'text-green-500'
+          }
         },
         {
           id: 'analysis',
@@ -56,7 +74,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI analyzes credit profile and eligibility',
           icon: Brain,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'AI Engine',
+            icon: Brain,
+            color: 'text-purple-500'
+          }
         },
         {
           id: 'assessment',
@@ -64,7 +87,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI determines customer intent level',
           icon: Target,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'AI Voice Call',
+            icon: PhoneCall,
+            color: 'text-blue-500'
+          }
         }
       ],
       interestedPath: [
@@ -74,7 +102,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI generates pre-approval offer',
           icon: CheckCircle2,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'Email',
+            icon: Mail,
+            color: 'text-orange-500'
+          }
         },
         {
           id: 'application',
@@ -82,7 +115,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Send secure application portal link',
           icon: CreditCard,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'SMS',
+            icon: Smartphone,
+            color: 'text-blue-500'
+          }
         }
       ],
       notInterestedPath: [
@@ -92,7 +130,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Send financial wellness tips',
           icon: Mail,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'LinkedIn',
+            icon: Linkedin,
+            color: 'text-blue-600'
+          }
         },
         {
           id: 'nurture2',
@@ -100,7 +143,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Schedule rate alerts and promotions',
           icon: TrendingUp,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'Facebook',
+            icon: Facebook,
+            color: 'text-blue-500'
+          }
         }
       ]
     },
@@ -115,7 +163,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Customer asks about available properties',
           icon: MessageSquare,
           status: 'pending' as const,
-          type: 'customer' as const
+          type: 'customer' as const,
+          channel: {
+            name: 'Instagram',
+            icon: Instagram,
+            color: 'text-pink-500'
+          }
         },
         {
           id: 'analysis',
@@ -123,7 +176,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI analyzes preferences and budget',
           icon: Brain,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'AI Engine',
+            icon: Brain,
+            color: 'text-purple-500'
+          }
         },
         {
           id: 'assessment',
@@ -131,7 +189,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI gauges buying intent and timeline',
           icon: Target,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'Website Chat',
+            icon: Globe,
+            color: 'text-blue-500'
+          }
         }
       ],
       interestedPath: [
@@ -141,7 +204,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Book property viewing appointment',
           icon: Home,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'AI Voice Call',
+            icon: PhoneCall,
+            color: 'text-green-500'
+          }
         },
         {
           id: 'agent',
@@ -149,7 +217,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Connect with qualified agent',
           icon: Phone,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'WhatsApp',
+            icon: MessageCircle,
+            color: 'text-green-500'
+          }
         }
       ],
       notInterestedPath: [
@@ -159,7 +232,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Subscribe to market insights',
           icon: Mail,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'Email',
+            icon: Mail,
+            color: 'text-orange-500'
+          }
         },
         {
           id: 'alerts',
@@ -167,7 +245,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Set up automated property alerts',
           icon: TrendingUp,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'SMS',
+            icon: Smartphone,
+            color: 'text-blue-500'
+          }
         }
       ]
     },
@@ -182,7 +265,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Customer searches for specific product',
           icon: MessageSquare,
           status: 'pending' as const,
-          type: 'customer' as const
+          type: 'customer' as const,
+          channel: {
+            name: 'Facebook Messenger',
+            icon: Facebook,
+            color: 'text-blue-500'
+          }
         },
         {
           id: 'analysis',
@@ -190,7 +278,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI analyzes preferences and history',
           icon: Brain,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'AI Engine',
+            icon: Brain,
+            color: 'text-purple-500'
+          }
         },
         {
           id: 'assessment',
@@ -198,7 +291,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI evaluates buying signals',
           icon: Target,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'AI Voice Call',
+            icon: PhoneCall,
+            color: 'text-blue-500'
+          }
         }
       ],
       interestedPath: [
@@ -208,7 +306,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Apply personalized discount',
           icon: CheckCircle2,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'WhatsApp',
+            icon: MessageCircle,
+            color: 'text-green-500'
+          }
         },
         {
           id: 'checkout',
@@ -216,7 +319,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Send one-click purchase link',
           icon: ShoppingCart,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'SMS',
+            icon: Smartphone,
+            color: 'text-blue-500'
+          }
         }
       ],
       notInterestedPath: [
@@ -226,7 +334,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Suggest similar products',
           icon: Mail,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'Email',
+            icon: Mail,
+            color: 'text-orange-500'
+          }
         },
         {
           id: 'retargeting',
@@ -234,7 +347,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Add to remarketing sequence',
           icon: TrendingUp,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'Instagram',
+            icon: Instagram,
+            color: 'text-pink-500'
+          }
         }
       ]
     },
@@ -249,7 +367,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Customer asks about vacation packages',
           icon: MessageSquare,
           status: 'pending' as const,
-          type: 'customer' as const
+          type: 'customer' as const,
+          channel: {
+            name: 'Twitter',
+            icon: Twitter,
+            color: 'text-blue-400'
+          }
         },
         {
           id: 'analysis',
@@ -257,7 +380,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI analyzes preferences and budget',
           icon: Brain,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'AI Engine',
+            icon: Brain,
+            color: 'text-purple-500'
+          }
         },
         {
           id: 'assessment',
@@ -265,7 +393,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'AI assesses travel timeline',
           icon: Target,
           status: 'pending' as const,
-          type: 'ai' as const
+          type: 'ai' as const,
+          channel: {
+            name: 'Website Chat',
+            icon: Globe,
+            color: 'text-blue-500'
+          }
         }
       ],
       interestedPath: [
@@ -275,7 +408,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Generate personalized travel quote',
           icon: CheckCircle2,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'Email',
+            icon: Mail,
+            color: 'text-orange-500'
+          }
         },
         {
           id: 'booking',
@@ -283,7 +421,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Send secure booking link',
           icon: Plane,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'WhatsApp',
+            icon: MessageCircle,
+            color: 'text-green-500'
+          }
         }
       ],
       notInterestedPath: [
@@ -293,7 +436,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Send destination guides',
           icon: Mail,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'Instagram',
+            icon: Instagram,
+            color: 'text-pink-500'
+          }
         },
         {
           id: 'deals',
@@ -301,7 +449,12 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
           description: 'Subscribe to travel deals',
           icon: TrendingUp,
           status: 'pending' as const,
-          type: 'action' as const
+          type: 'action' as const,
+          channel: {
+            name: 'SMS',
+            icon: Smartphone,
+            color: 'text-blue-500'
+          }
         }
       ]
     }
@@ -425,24 +578,38 @@ const OrchestrationAnimation = ({ industry }: OrchestrationAnimationProps) => {
               
               {/* Step Content */}
               <div className="flex-1">
-                <div className="flex items-center space-x-2">
-                  <h4 className={`font-semibold text-sm ${
-                    status === 'active' ? 'text-primary' : 
-                    status === 'completed' ? 'text-foreground' : 'text-muted-foreground'
-                  }`}>
-                    {step.title}
-                  </h4>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <h4 className={`font-semibold text-sm ${
+                      status === 'active' ? 'text-primary' : 
+                      status === 'completed' ? 'text-foreground' : 'text-muted-foreground'
+                    }`}>
+                      {step.title}
+                    </h4>
+                    
+                    {status === 'completed' && (
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                    )}
+                    
+                    {status === 'active' && (
+                      <Clock className="w-4 h-4 text-primary animate-spin" />
+                    )}
+                  </div>
                   
-                  {status === 'completed' && (
-                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                  )}
-                  
-                  {status === 'active' && (
-                    <Clock className="w-4 h-4 text-primary animate-spin" />
+                  {/* Platform/Channel Indicator */}
+                  {step.channel && (
+                    <div className={`flex items-center space-x-1 bg-muted/10 rounded-full px-2 py-1 transition-all duration-500 ${
+                      status === 'active' ? 'ring-2 ring-primary/20 bg-primary/5' : ''
+                    }`}>
+                      <step.channel.icon className={`w-3 h-3 ${step.channel.color}`} />
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {step.channel.name}
+                      </span>
+                    </div>
                   )}
                 </div>
                 
-                <p className="text-xs text-muted-foreground">{step.description}</p>
+                <p className="text-xs text-muted-foreground mt-1">{step.description}</p>
                 
                 {/* Decision Indicator */}
                 {isDecisionPoint && (
