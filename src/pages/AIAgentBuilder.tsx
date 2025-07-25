@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Globe, Palette, Mic, Eye, Calendar, Users, Plus, Play, Send } from 'lucide-react';
+import { Upload, Globe, Palette, Mic, Eye, Calendar, Users, Plus, Play, Send, FileText, Link2 } from 'lucide-react';
 
 interface AIAgent {
   id?: string;
@@ -67,6 +67,7 @@ const AIAgentBuilder = () => {
   const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([]);
   const [newKnowledge, setNewKnowledge] = useState({ name: '', content: '' });
   const [scrapeUrl, setScrapeUrl] = useState('');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [testMessage, setTestMessage] = useState('');
   const [testResponse, setTestResponse] = useState('');
   const navigate = useNavigate();
@@ -169,6 +170,111 @@ const AIAgentBuilder = () => {
     }
   };
 
+  const handleFileUpload = async () => {
+    if (!uploadedFile) return;
+
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // Upload file to storage
+      const fileName = `${user.id}/${Date.now()}_${uploadedFile.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from('knowledge-files')
+        .upload(fileName, uploadedFile);
+
+      if (uploadError) throw uploadError;
+
+      // Extract text content based on file type
+      let content = '';
+      if (uploadedFile.type === 'text/plain') {
+        content = await uploadedFile.text();
+      } else {
+        // For other file types, we'll store the filename and note that processing is needed
+        content = `File uploaded: ${uploadedFile.name}\nType: ${uploadedFile.type}\nSize: ${uploadedFile.size} bytes\n\nNote: Text extraction for this file type is not yet implemented. Please copy and paste the content manually.`;
+      }
+
+      // Save to knowledge base
+      const { error: dbError } = await supabase
+        .from('knowledge_bases')
+        .insert({
+          user_id: user.id,
+          name: uploadedFile.name,
+          content: content,
+          source_type: 'upload',
+          source_url: fileName,
+          is_editable: true
+        });
+
+      if (dbError) throw dbError;
+
+      setUploadedFile(null);
+      loadKnowledgeBases();
+      
+      toast({
+        title: "Success!",
+        description: "File uploaded and processed successfully.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleScrapeWebsite = async () => {
+    if (!scrapeUrl) return;
+
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // Call scraping edge function
+      const { data, error } = await supabase.functions.invoke('scrape-website', {
+        body: { url: scrapeUrl }
+      });
+
+      if (error) throw error;
+      if (!data.success) throw new Error(data.error);
+
+      // Save scraped content to knowledge base
+      const { error: dbError } = await supabase
+        .from('knowledge_bases')
+        .insert({
+          user_id: user.id,
+          name: data.title || new URL(scrapeUrl).hostname,
+          content: data.content,
+          source_type: 'scrape',
+          source_url: scrapeUrl,
+          is_editable: true
+        });
+
+      if (dbError) throw dbError;
+
+      setScrapeUrl('');
+      loadKnowledgeBases();
+      
+      toast({
+        title: "Success!",
+        description: "Website scraped and content extracted successfully.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loadKnowledgeBases = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -243,9 +349,25 @@ const AIAgentBuilder = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Add Knowledge Base</h3>
-              <div className="grid gap-4">
+            <h3 className="text-lg font-semibold">Add Knowledge Base</h3>
+            
+            <Tabs defaultValue="manual" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="manual" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Manual Input
+                </TabsTrigger>
+                <TabsTrigger value="upload" className="flex items-center gap-2">
+                  <Upload className="h-4 w-4" />
+                  File Upload
+                </TabsTrigger>
+                <TabsTrigger value="scrape" className="flex items-center gap-2">
+                  <Link2 className="h-4 w-4" />
+                  Web Scraping
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="manual" className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="knowledge-name">Knowledge Base Name</Label>
                   <Input
@@ -265,45 +387,82 @@ const AIAgentBuilder = () => {
                     rows={6}
                   />
                 </div>
-                <Button onClick={handleAddKnowledge} disabled={loading} className="w-fit">
+                <Button onClick={handleAddKnowledge} disabled={loading || !newKnowledge.name || !newKnowledge.content} className="w-fit">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Knowledge Base
                 </Button>
-              </div>
-            </div>
+              </TabsContent>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                <Label htmlFor="scrape-url">Scrape Website (Optional)</Label>
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  id="scrape-url"
-                  value={scrapeUrl}
-                  onChange={(e) => setScrapeUrl(e.target.value)}
-                  placeholder="https://example.com"
-                />
-                <Button variant="outline" disabled={!scrapeUrl || loading}>
+              <TabsContent value="upload" className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="file-upload">Upload File</Label>
+                  <Input
+                    id="file-upload"
+                    type="file"
+                    onChange={(e) => setUploadedFile(e.target.files?.[0] || null)}
+                    accept=".txt,.pdf,.doc,.docx,.md"
+                    className="cursor-pointer"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Supported formats: TXT, PDF, DOC, DOCX, MD
+                  </p>
+                </div>
+                <Button onClick={handleFileUpload} disabled={loading || !uploadedFile} className="w-fit">
                   <Upload className="h-4 w-4 mr-2" />
-                  Scrape
+                  {loading ? 'Processing...' : 'Upload & Process'}
                 </Button>
-              </div>
-            </div>
+              </TabsContent>
+
+              <TabsContent value="scrape" className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="scrape-url">Website URL</Label>
+                  <Input
+                    id="scrape-url"
+                    type="url"
+                    value={scrapeUrl}
+                    onChange={(e) => setScrapeUrl(e.target.value)}
+                    placeholder="https://example.com"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Enter a website URL to automatically extract and add its content to your knowledge base.
+                  </p>
+                </div>
+                <Button onClick={handleScrapeWebsite} disabled={loading || !scrapeUrl} className="w-fit">
+                  <Globe className="h-4 w-4 mr-2" />
+                  {loading ? 'Scraping...' : 'Scrape Website'}
+                </Button>
+              </TabsContent>
+            </Tabs>
 
             {knowledgeBases.length > 0 && (
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <h4 className="font-medium">Existing Knowledge Bases</h4>
-                <div className="grid gap-2">
+                <div className="grid gap-3">
                   {knowledgeBases.map((kb) => (
-                    <div key={kb.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
+                    <div key={kb.id} className="flex items-center justify-between p-4 border rounded-lg bg-card">
+                      <div className="flex-1">
                         <p className="font-medium">{kb.name}</p>
-                        <p className="text-sm text-muted-foreground">{kb.source_type}</p>
+                        <p className="text-sm text-muted-foreground capitalize">{kb.source_type}</p>
+                        {kb.source_url && (
+                          <p className="text-xs text-muted-foreground truncate max-w-xs">
+                            {kb.source_type === 'scrape' ? kb.source_url : `File: ${kb.source_url.split('/').pop()}`}
+                          </p>
+                        )}
                       </div>
-                      <Badge variant={kb.is_editable ? "default" : "secondary"}>
-                        {kb.is_editable ? "Editable" : "Read-only"}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={kb.is_editable ? "default" : "secondary"}>
+                          {kb.is_editable ? "Editable" : "Read-only"}
+                        </Badge>
+                        {kb.source_type === 'upload' && (
+                          <Upload className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        {kb.source_type === 'scrape' && (
+                          <Globe className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        {kb.source_type === 'manual' && (
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
