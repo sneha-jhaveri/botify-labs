@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Globe, Palette, Mic, Eye, Calendar, Users, Plus, Play, Send, FileText, Link2 } from 'lucide-react';
+import { Upload, Globe, Palette, Mic, Eye, Calendar, Users, Plus, Play, Send, FileText, Link2, MessageCircle, Bot } from 'lucide-react';
 
 interface AIAgent {
   id?: string;
@@ -68,8 +68,8 @@ const AIAgentBuilder = () => {
   const [newKnowledge, setNewKnowledge] = useState({ name: '', content: '' });
   const [scrapeUrl, setScrapeUrl] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [testMessage, setTestMessage] = useState('');
-  const [testResponse, setTestResponse] = useState('');
+  const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string; timestamp: string }[]>([]);
+  const [currentMessage, setCurrentMessage] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -296,19 +296,62 @@ const AIAgentBuilder = () => {
     loadKnowledgeBases();
   }, []);
 
-  const handleTestAgent = async () => {
-    if (!testMessage.trim()) return;
+  const handleSendMessage = async () => {
+    if (!currentMessage.trim() || !agent.name) return;
 
+    const userMessage = { role: 'user' as const, content: currentMessage, timestamp: new Date().toISOString() };
+    setChatMessages(prev => [...prev, userMessage]);
+    setCurrentMessage('');
     setLoading(true);
+
     try {
-      // This would integrate with OpenAI API through edge function
-      setTestResponse(`Test response for: "${testMessage}". This is a placeholder response while the full AI integration is being built.`);
-      
-      toast({
-        title: "Test Complete",
-        description: "AI agent responded successfully.",
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // First save the agent to get an ID
+      if (!agent.id) {
+        const { data: savedAgent, error } = await supabase
+          .from('ai_agents')
+          .insert({
+            ...agent,
+            user_id: user.id,
+            tools: JSON.stringify(agent.tools),
+            ui_theme: JSON.stringify(agent.ui_theme),
+            workflow_config: JSON.stringify(agent.workflow_config)
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        setAgent(prev => ({ ...prev, id: savedAgent.id }));
+      }
+
+      // Call AI chat function
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: { 
+          message: currentMessage, 
+          agentId: agent.id,
+          userId: user.id 
+        }
       });
+
+      if (error) throw error;
+
+      const aiMessage = { 
+        role: 'assistant' as const, 
+        content: data.response || data.fallback, 
+        timestamp: new Date().toISOString() 
+      };
+      setChatMessages(prev => [...prev, aiMessage]);
+
     } catch (error: any) {
+      const errorMessage = { 
+        role: 'assistant' as const, 
+        content: agent.fallback_message, 
+        timestamp: new Date().toISOString() 
+      };
+      setChatMessages(prev => [...prev, errorMessage]);
+      
       toast({
         title: "Error",
         description: error.message,
@@ -606,31 +649,57 @@ const AIAgentBuilder = () => {
       case 6:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold">Test Your AI Agent</h3>
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Bot className="h-5 w-5" />
+              Chat with Your AI Agent
+            </h3>
             
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="test-message">Test Message</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="test-message"
-                    value={testMessage}
-                    onChange={(e) => setTestMessage(e.target.value)}
-                    placeholder="Ask your AI agent a question..."
-                  />
-                  <Button onClick={handleTestAgent} disabled={loading || !testMessage.trim()}>
-                    <Send className="h-4 w-4 mr-2" />
-                    Test
-                  </Button>
+            <div className="border rounded-lg p-4 h-96 overflow-y-auto bg-muted/20">
+              {chatMessages.length === 0 ? (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  <div className="text-center">
+                    <MessageCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>Start a conversation with your AI agent</p>
+                  </div>
                 </div>
-              </div>
-
-              {testResponse && (
-                <div className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-medium mb-2">AI Response:</h4>
-                  <p>{testResponse}</p>
+              ) : (
+                <div className="space-y-4">
+                  {chatMessages.map((msg, index) => (
+                    <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[80%] p-3 rounded-lg ${
+                        msg.role === 'user' 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-background border'
+                      }`}>
+                        <p className="text-sm">{msg.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {loading && (
+                    <div className="flex justify-start">
+                      <div className="bg-background border p-3 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="animate-pulse">●</div>
+                          <span className="text-sm text-muted-foreground">AI is typing...</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
+            </div>
+
+            <div className="flex gap-2">
+              <Input
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+                placeholder="Type your message..."
+                onKeyPress={(e) => e.key === 'Enter' && !loading && handleSendMessage()}
+                disabled={loading}
+              />
+              <Button onClick={handleSendMessage} disabled={loading || !currentMessage.trim()}>
+                <Send className="h-4 w-4" />
+              </Button>
             </div>
 
             <div className="space-y-4">
