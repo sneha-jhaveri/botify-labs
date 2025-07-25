@@ -175,6 +175,9 @@ const Navigation = () => {
               <PlayCircle className="w-4 h-4" />
               <span>Watch Demo</span>
             </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
+              Sign In
+            </Button>
             <Button variant="cta" size="sm">
               Start Free Trial
             </Button>
@@ -250,6 +253,9 @@ const Navigation = () => {
                 <Button variant="demo" size="lg" className="w-full flex items-center justify-center space-x-2">
                   <PlayCircle className="w-4 h-4" />
                   <span>Watch Demo</span>
+                </Button>
+                <Button variant="outline" size="lg" className="w-full" onClick={() => navigate('/auth')}>
+                  Sign In
                 </Button>
                 <Button variant="cta" size="lg" className="w-full">
                   Start Free Trial
