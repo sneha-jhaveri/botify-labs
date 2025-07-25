@@ -6,12 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { User, Session } from '@supabase/supabase-js';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [referralSource, setReferralSource] = useState('');
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -25,9 +31,9 @@ const AuthPage = () => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Redirect authenticated users to home
+        // Redirect authenticated users to AI agent builder
         if (session?.user) {
-          navigate('/');
+          navigate('/build-agent');
         }
       }
     );
@@ -38,7 +44,7 @@ const AuthPage = () => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        navigate('/');
+        navigate('/build-agent');
       }
     });
 
@@ -47,15 +53,30 @@ const AuthPage = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!agreedToPrivacy) {
+      toast({
+        title: "Privacy Policy Required",
+        description: "Please agree to the privacy policy to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/build-agent`;
 
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl
+        emailRedirectTo: redirectUrl,
+        data: {
+          username,
+          full_name: fullName,
+          referral_source: referralSource
+        }
       }
     });
 
@@ -69,6 +90,27 @@ const AuthPage = () => {
       toast({
         title: "Success!",
         description: "Please check your email to confirm your account.",
+      });
+    }
+
+    setLoading(false);
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/build-agent`
+      }
+    });
+
+    if (error) {
+      toast({
+        title: "Google Sign In Error",
+        description: error.message,
+        variant: "destructive",
       });
     }
 
@@ -145,11 +187,54 @@ const AuthPage = () => {
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? 'Signing In...' : 'Sign In'}
                   </Button>
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        Or continue with
+                      </span>
+                    </div>
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={handleGoogleSignIn}
+                    disabled={loading}
+                  >
+                    Sign in with Google
+                  </Button>
                 </form>
               </TabsContent>
 
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-username">Username</Label>
+                      <Input
+                        id="signup-username"
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Choose username"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-fullname">Full Name</Label>
+                      <Input
+                        id="signup-fullname"
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Your full name"
+                        required
+                      />
+                    </div>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
@@ -173,8 +258,54 @@ const AuthPage = () => {
                       minLength={6}
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <div className="space-y-2">
+                    <Label htmlFor="referral-source">How did you hear about BotWot?</Label>
+                    <Select onValueChange={setReferralSource} required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select how you heard about us" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="search">Google Search</SelectItem>
+                        <SelectItem value="social">Social Media</SelectItem>
+                        <SelectItem value="friend">Friend/Colleague</SelectItem>
+                        <SelectItem value="advertisement">Advertisement</SelectItem>
+                        <SelectItem value="blog">Blog/Article</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="privacy-agreement"
+                      checked={agreedToPrivacy}
+                      onCheckedChange={(checked) => setAgreedToPrivacy(checked as boolean)}
+                      required
+                    />
+                    <Label htmlFor="privacy-agreement" className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      I agree to the <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link> and <Link to="/terms" className="text-primary hover:underline">Terms of Service</Link>
+                    </Label>
+                  </div>
+                  <Button type="submit" className="w-full" disabled={loading || !agreedToPrivacy}>
                     {loading ? 'Creating Account...' : 'Create Account'}
+                  </Button>
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        Or continue with
+                      </span>
+                    </div>
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={handleGoogleSignIn}
+                    disabled={loading}
+                  >
+                    Sign up with Google
                   </Button>
                 </form>
               </TabsContent>

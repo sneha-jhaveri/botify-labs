@@ -10,6 +10,7 @@ import PricingPage from "./pages/PricingPage";
 import TechnologyPage from "./pages/TechnologyPage";
 import UseCasesPage from "./pages/UseCasesPage";
 import AuthPage from "./pages/AuthPage";
+import AIAgentBuilder from "./pages/AIAgentBuilder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/technology" element={<TechnologyPage />} />
           <Route path="/use-cases" element={<UseCasesPage />} />
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/build-agent" element={<AIAgentBuilder />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
