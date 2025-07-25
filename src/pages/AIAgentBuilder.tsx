@@ -134,22 +134,39 @@ const AIAgentBuilder = () => {
   const handleAddKnowledge = async () => {
     if (!newKnowledge.name || !newKnowledge.content) return;
 
+    console.log('Adding knowledge base:', { name: newKnowledge.name, contentLength: newKnowledge.content.length });
+
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) {
+        console.error('User not authenticated');
+        throw new Error('Not authenticated');
+      }
 
-      const { error } = await supabase
+      console.log('User authenticated:', user.id);
+
+      const kbData = {
+        user_id: user.id,
+        name: newKnowledge.name,
+        content: newKnowledge.content,
+        source_type: 'manual',
+        is_editable: true
+      };
+
+      console.log('Inserting knowledge base:', kbData);
+
+      const { data, error } = await supabase
         .from('knowledge_bases')
-        .insert({
-          user_id: user.id,
-          name: newKnowledge.name,
-          content: newKnowledge.content,
-          source_type: 'manual',
-          is_editable: true
-        });
+        .insert(kbData)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
+
+      console.log('Knowledge base saved successfully:', data);
 
       setNewKnowledge({ name: '', content: '' });
       // Refresh knowledge bases list
@@ -160,6 +177,7 @@ const AIAgentBuilder = () => {
         description: "Knowledge base added successfully.",
       });
     } catch (error: any) {
+      console.error('Error in handleAddKnowledge:', error);
       toast({
         title: "Error",
         description: error.message,
@@ -230,32 +248,64 @@ const AIAgentBuilder = () => {
   const handleScrapeWebsite = async () => {
     if (!scrapeUrl) return;
 
+    console.log('Starting website scrape:', scrapeUrl);
+
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!user) {
+        console.error('User not authenticated for scraping');
+        throw new Error('Not authenticated');
+      }
+
+      console.log('User authenticated for scraping:', user.id);
 
       // Call scraping edge function
+      console.log('Calling scrape-website function...');
       const { data, error } = await supabase.functions.invoke('scrape-website', {
         body: { url: scrapeUrl }
       });
 
-      if (error) throw error;
-      if (!data.success) throw new Error(data.error);
+      console.log('Scrape function response:', { data, error });
+
+      if (error) {
+        console.error('Scrape function error:', error);
+        throw error;
+      }
+      if (!data.success) {
+        console.error('Scrape failed:', data.error);
+        throw new Error(data.error);
+      }
+
+      console.log('Scrape successful, content length:', data.content?.length);
 
       // Save scraped content to knowledge base
-      const { error: dbError } = await supabase
-        .from('knowledge_bases')
-        .insert({
-          user_id: user.id,
-          name: data.title || new URL(scrapeUrl).hostname,
-          content: data.content,
-          source_type: 'scrape',
-          source_url: scrapeUrl,
-          is_editable: true
-        });
+      const kbData = {
+        user_id: user.id,
+        name: data.title || new URL(scrapeUrl).hostname,
+        content: data.content,
+        source_type: 'scrape',
+        source_url: scrapeUrl,
+        is_editable: true
+      };
 
-      if (dbError) throw dbError;
+      console.log('Saving scraped content to database:', { 
+        name: kbData.name, 
+        contentLength: kbData.content?.length,
+        sourceUrl: kbData.source_url 
+      });
+
+      const { data: savedKb, error: dbError } = await supabase
+        .from('knowledge_bases')
+        .insert(kbData)
+        .select();
+
+      if (dbError) {
+        console.error('Database error saving scraped content:', dbError);
+        throw dbError;
+      }
+
+      console.log('Scraped content saved successfully:', savedKb);
 
       setScrapeUrl('');
       loadKnowledgeBases();
@@ -265,6 +315,7 @@ const AIAgentBuilder = () => {
         description: "Website scraped and content extracted successfully.",
       });
     } catch (error: any) {
+      console.error('Error in handleScrapeWebsite:', error);
       toast({
         title: "Error",
         description: error.message,
@@ -278,17 +329,27 @@ const AIAgentBuilder = () => {
   const loadKnowledgeBases = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('No user found, cannot load knowledge bases');
+        return;
+      }
+
+      console.log('Loading knowledge bases for user:', user.id);
 
       const { data, error } = await supabase
         .from('knowledge_bases')
         .select('*')
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading knowledge bases:', error);
+        throw error;
+      }
+      
+      console.log('Loaded knowledge bases:', data?.length || 0, data);
       setKnowledgeBases((data || []) as KnowledgeBase[]);
     } catch (error: any) {
-      console.error('Error loading knowledge bases:', error);
+      console.error('Error in loadKnowledgeBases:', error);
     }
   };
 
