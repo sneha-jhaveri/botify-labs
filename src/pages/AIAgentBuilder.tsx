@@ -67,6 +67,7 @@ const AIAgentBuilder = () => {
   const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([]);
   const [newKnowledge, setNewKnowledge] = useState({ name: '', content: '' });
   const [scrapeUrl, setScrapeUrl] = useState('');
+  const [scrapedContent, setScrapedContent] = useState<{ title: string; content: string; url: string } | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string; timestamp: string }[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
@@ -251,6 +252,8 @@ const AIAgentBuilder = () => {
     console.log('Starting website scrape:', scrapeUrl);
 
     setLoading(true);
+    setScrapedContent(null); // Clear previous content
+    
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -279,13 +282,43 @@ const AIAgentBuilder = () => {
 
       console.log('Scrape successful, content length:', data.content?.length);
 
-      // Save scraped content to knowledge base
+      // Show scraped content in preview
+      setScrapedContent({
+        title: data.title || new URL(scrapeUrl).hostname,
+        content: data.content,
+        url: scrapeUrl
+      });
+      
+      toast({
+        title: "Success!",
+        description: "Website scraped successfully. Review the content below and save if needed.",
+      });
+    } catch (error: any) {
+      console.error('Error in handleScrapeWebsite:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveScrapedContent = async () => {
+    if (!scrapedContent) return;
+
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
       const kbData = {
         user_id: user.id,
-        name: data.title || new URL(scrapeUrl).hostname,
-        content: data.content,
+        name: scrapedContent.title,
+        content: scrapedContent.content,
         source_type: 'scrape',
-        source_url: scrapeUrl,
+        source_url: scrapedContent.url,
         is_editable: true
       };
 
@@ -308,14 +341,15 @@ const AIAgentBuilder = () => {
       console.log('Scraped content saved successfully:', savedKb);
 
       setScrapeUrl('');
+      setScrapedContent(null);
       loadKnowledgeBases();
       
       toast({
-        title: "Success!",
-        description: "Website scraped and content extracted successfully.",
+        title: "Saved!",
+        description: "Scraped content added to knowledge base successfully.",
       });
     } catch (error: any) {
-      console.error('Error in handleScrapeWebsite:', error);
+      console.error('Error saving scraped content:', error);
       toast({
         title: "Error",
         description: error.message,
@@ -558,6 +592,38 @@ const AIAgentBuilder = () => {
                   <Globe className="h-4 w-4 mr-2" />
                   {loading ? 'Scraping...' : 'Scrape Website'}
                 </Button>
+
+                {scrapedContent && (
+                  <div className="mt-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Scraped Content Preview</h4>
+                      <Badge variant="secondary">
+                        {scrapedContent.content.length} characters
+                      </Badge>
+                    </div>
+                    
+                    <div className="border rounded-lg p-4 bg-muted/20">
+                      <div className="mb-3">
+                        <p className="font-medium text-sm">Title: {scrapedContent.title}</p>
+                        <p className="text-xs text-muted-foreground">Source: {scrapedContent.url}</p>
+                      </div>
+                      
+                      <div className="max-h-60 overflow-y-auto">
+                        <p className="text-sm whitespace-pre-wrap">{scrapedContent.content}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button onClick={handleSaveScrapedContent} disabled={loading}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        {loading ? 'Saving...' : 'Save to Knowledge Base'}
+                      </Button>
+                      <Button variant="outline" onClick={() => setScrapedContent(null)}>
+                        Discard
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
 
