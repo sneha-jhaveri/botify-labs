@@ -14,7 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agent_knowledge_bases: {
+        Row: {
+          agent_id: string
+          created_at: string | null
+          id: string
+          knowledge_base_id: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string | null
+          id?: string
+          knowledge_base_id: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string | null
+          id?: string
+          knowledge_base_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_knowledge_bases_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ai_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_knowledge_bases_knowledge_base_id_fkey"
+            columns: ["knowledge_base_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_bases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_agents: {
+        Row: {
+          created_at: string | null
+          custom_icon_url: string | null
+          deployment_url: string | null
+          description: string | null
+          fallback_message: string | null
+          font_family: string | null
+          goals: string | null
+          guidelines: string | null
+          has_calendar: boolean | null
+          has_lead_capture: boolean | null
+          has_vision: boolean | null
+          has_voice_ai: boolean | null
+          id: string
+          is_deployed: boolean | null
+          name: string
+          primary_color: string | null
+          tools: Json | null
+          ui_theme: Json | null
+          updated_at: string | null
+          user_id: string
+          workflow_config: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          custom_icon_url?: string | null
+          deployment_url?: string | null
+          description?: string | null
+          fallback_message?: string | null
+          font_family?: string | null
+          goals?: string | null
+          guidelines?: string | null
+          has_calendar?: boolean | null
+          has_lead_capture?: boolean | null
+          has_vision?: boolean | null
+          has_voice_ai?: boolean | null
+          id?: string
+          is_deployed?: boolean | null
+          name: string
+          primary_color?: string | null
+          tools?: Json | null
+          ui_theme?: Json | null
+          updated_at?: string | null
+          user_id: string
+          workflow_config?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          custom_icon_url?: string | null
+          deployment_url?: string | null
+          description?: string | null
+          fallback_message?: string | null
+          font_family?: string | null
+          goals?: string | null
+          guidelines?: string | null
+          has_calendar?: boolean | null
+          has_lead_capture?: boolean | null
+          has_vision?: boolean | null
+          has_voice_ai?: boolean | null
+          id?: string
+          is_deployed?: boolean | null
+          name?: string
+          primary_color?: string | null
+          tools?: Json | null
+          ui_theme?: Json | null
+          updated_at?: string | null
+          user_id?: string
+          workflow_config?: Json | null
+        }
+        Relationships: []
+      }
+      knowledge_bases: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          is_editable: boolean | null
+          name: string
+          source_type: string | null
+          source_url: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_editable?: boolean | null
+          name: string
+          source_type?: string | null
+          source_url?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_editable?: boolean | null
+          name?: string
+          source_type?: string | null
+          source_url?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          agreed_to_privacy: boolean | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          referral_source: string | null
+          role: string | null
+          updated_at: string | null
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          agreed_to_privacy?: boolean | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          referral_source?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          agreed_to_privacy?: boolean | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          referral_source?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
