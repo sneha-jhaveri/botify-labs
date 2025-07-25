@@ -297,7 +297,9 @@ const AIAgentBuilder = () => {
   }, []);
 
   const handleSendMessage = async () => {
-    if (!currentMessage.trim() || !agent.name) return;
+    if (!currentMessage.trim()) return;
+
+    console.log('Sending message, agent state:', { hasId: !!agent.id, agentName: agent.name });
 
     const userMessage = { role: 'user' as const, content: currentMessage, timestamp: new Date().toISOString() };
     setChatMessages(prev => [...prev, userMessage]);
@@ -308,46 +310,67 @@ const AIAgentBuilder = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // First save the agent to get an ID
-      if (!agent.id) {
+      let agentId = agent.id;
+
+      // Save the agent first if it doesn't have an ID
+      if (!agentId) {
+        console.log('Saving agent first...');
+        const agentData = {
+          ...agent,
+          user_id: user.id,
+          tools: JSON.stringify(agent.tools),
+          ui_theme: JSON.stringify(agent.ui_theme),
+          workflow_config: JSON.stringify(agent.workflow_config)
+        };
+
         const { data: savedAgent, error } = await supabase
           .from('ai_agents')
-          .insert({
-            ...agent,
-            user_id: user.id,
-            tools: JSON.stringify(agent.tools),
-            ui_theme: JSON.stringify(agent.ui_theme),
-            workflow_config: JSON.stringify(agent.workflow_config)
-          })
+          .insert(agentData)
           .select()
           .single();
 
-        if (error) throw error;
-        setAgent(prev => ({ ...prev, id: savedAgent.id }));
+        if (error) {
+          console.error('Error saving agent:', error);
+          throw new Error(`Failed to save agent: ${error.message}`);
+        }
+
+        agentId = savedAgent.id;
+        setAgent(prev => ({ ...prev, id: agentId }));
+        console.log('Agent saved with ID:', agentId);
       }
+
+      if (!agentId) {
+        throw new Error('No agent ID available');
+      }
+
+      console.log('Calling AI chat function with:', { agentId, userId: user.id, message: userMessage.content });
 
       // Call AI chat function
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: { 
-          message: currentMessage, 
-          agentId: agent.id,
+          message: userMessage.content, 
+          agentId: agentId,
           userId: user.id 
         }
       });
+
+      console.log('AI chat response:', { data, error });
 
       if (error) throw error;
 
       const aiMessage = { 
         role: 'assistant' as const, 
-        content: data.response || data.fallback, 
+        content: data.response || data.fallback || "I apologize, I couldn't generate a response.", 
         timestamp: new Date().toISOString() 
       };
       setChatMessages(prev => [...prev, aiMessage]);
 
     } catch (error: any) {
+      console.error('Error in handleSendMessage:', error);
+      
       const errorMessage = { 
         role: 'assistant' as const, 
-        content: agent.fallback_message, 
+        content: agent.fallback_message || "I apologize, but I'm having trouble processing your request right now.", 
         timestamp: new Date().toISOString() 
       };
       setChatMessages(prev => [...prev, errorMessage]);
