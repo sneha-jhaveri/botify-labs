@@ -16,8 +16,26 @@ serve(async (req) => {
   try {
     const { message, agentId, userId } = await req.json();
 
-    if (!message || !agentId || !userId) {
-      throw new Error('Message, agentId, and userId are required');
+    console.log('Received request:', { message: !!message, agentId: !!agentId, userId: !!userId });
+
+    if (!message) {
+      return new Response(JSON.stringify({ 
+        error: 'Message is required',
+        fallback: "Please provide a message to chat with the AI agent."
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!userId) {
+      return new Response(JSON.stringify({ 
+        error: 'User not authenticated',
+        fallback: "Please log in to chat with the AI agent."
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     // Initialize Supabase client
@@ -26,19 +44,27 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
-    // Get agent details
-    const { data: agent, error: agentError } = await supabase
-      .from('ai_agents')
-      .select('*')
-      .eq('id', agentId)
-      .eq('user_id', userId)
-      .single();
+    let agent = null;
+    let context = '';
 
-    if (agentError || !agent) {
-      throw new Error('Agent not found or access denied');
+    // Try to get agent if agentId is provided
+    if (agentId) {
+      const { data: agentData, error: agentError } = await supabase
+        .from('ai_agents')
+        .select('*')
+        .eq('id', agentId)
+        .eq('user_id', userId)
+        .single();
+
+      if (agentError) {
+        console.log('Agent lookup error:', agentError);
+      } else {
+        agent = agentData;
+        console.log('Found agent:', agent.name);
+      }
     }
 
-    // Get knowledge bases for this user
+    // Get knowledge bases for this user regardless of agent
     const { data: knowledgeBases, error: kbError } = await supabase
       .from('knowledge_bases')
       .select('*')
@@ -46,34 +72,41 @@ serve(async (req) => {
 
     if (kbError) {
       console.error('Error fetching knowledge bases:', kbError);
-    }
-
-    // Prepare context from knowledge bases
-    let context = '';
-    if (knowledgeBases && knowledgeBases.length > 0) {
-      context = knowledgeBases
-        .map(kb => `### ${kb.name}\n${kb.content}`)
-        .join('\n\n');
+    } else {
+      console.log('Found knowledge bases:', knowledgeBases?.length || 0);
+      
+      // Prepare context from knowledge bases
+      if (knowledgeBases && knowledgeBases.length > 0) {
+        context = knowledgeBases
+          .map(kb => `### ${kb.name}\n${kb.content}`)
+          .join('\n\n');
+      }
     }
 
     // Use the hardcoded OpenAI API key
     const OPENAI_API_KEY = "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";
 
     // Create system prompt with agent configuration and knowledge base
-    const systemPrompt = `You are ${agent.name}, an AI assistant created to help users.
+    const agentName = agent?.name || 'AI Assistant';
+    const agentDescription = agent?.description || 'A helpful AI assistant';
+    const agentGuidelines = agent?.guidelines || 'Be helpful and accurate';
+    const agentGoals = agent?.goals || 'Assist users with their questions';
+    const fallbackMessage = agent?.fallback_message || 'I apologize, but I cannot assist with that request. Please try rephrasing your question or contact support.';
 
-${agent.description ? `Description: ${agent.description}` : ''}
+    const systemPrompt = `You are ${agentName}, an AI assistant created to help users.
 
-${agent.guidelines ? `Guidelines: ${agent.guidelines}` : ''}
+Description: ${agentDescription}
 
-${agent.goals ? `Goals: ${agent.goals}` : ''}
+Guidelines: ${agentGuidelines}
+
+Goals: ${agentGoals}
 
 ${context ? `Knowledge Base:
 ${context}
 
-Instructions: Use the information from the knowledge base above to answer questions. If the user asks about something not covered in the knowledge base, you can use your general knowledge but mention that the information might not be from the official knowledge base.` : ''}
+Instructions: Use the information from the knowledge base above to answer questions. If the user asks about something not covered in the knowledge base, you can use your general knowledge but mention that the information might not be from the official knowledge base.` : 'You can use your general knowledge to help users, but let them know if they haven\'t provided specific knowledge bases yet.'}
 
-If you cannot help with a request, respond with: "${agent.fallback_message}"
+If you cannot help with a request, respond with: "${fallbackMessage}"
 
 Always be helpful, accurate, and follow the guidelines provided.`;
 
@@ -109,7 +142,7 @@ Always be helpful, accurate, and follow the guidelines provided.`;
 
     return new Response(JSON.stringify({ 
       response: aiResponse,
-      agentName: agent.name,
+      agentName: agentName,
       timestamp: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
