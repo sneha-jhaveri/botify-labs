@@ -96,27 +96,6 @@ const AuthPage = () => {
     setLoading(false);
   };
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/build-agent`
-      }
-    });
-
-    if (error) {
-      toast({
-        title: "Google Sign In Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-
-    setLoading(false);
-  };
-
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -186,25 +165,6 @@ const AuthPage = () => {
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? 'Signing In...' : 'Sign In'}
-                  </Button>
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Or continue with
-                      </span>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={handleGoogleSignIn}
-                    disabled={loading}
-                  >
-                    Sign in with Google
                   </Button>
                 </form>
               </TabsContent>
@@ -287,25 +247,6 @@ const AuthPage = () => {
                   </div>
                   <Button type="submit" className="w-full" disabled={loading || !agreedToPrivacy}>
                     {loading ? 'Creating Account...' : 'Create Account'}
-                  </Button>
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Or continue with
-                      </span>
-                    </div>
-                  </div>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={handleGoogleSignIn}
-                    disabled={loading}
-                  >
-                    Sign up with Google
                   </Button>
                 </form>
               </TabsContent>
