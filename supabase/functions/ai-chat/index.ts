@@ -74,12 +74,17 @@ serve(async (req) => {
       console.error('Error fetching knowledge bases:', kbError);
     } else {
       console.log('Found knowledge bases:', knowledgeBases?.length || 0);
+      if (knowledgeBases && knowledgeBases.length > 0) {
+        console.log('Knowledge base names:', knowledgeBases.map(kb => kb.name));
+        console.log('Total content length:', knowledgeBases.reduce((sum, kb) => sum + (kb.content?.length || 0), 0));
+      }
       
       // Prepare context from knowledge bases
       if (knowledgeBases && knowledgeBases.length > 0) {
         context = knowledgeBases
           .map(kb => `### ${kb.name}\n${kb.content}`)
           .join('\n\n');
+        console.log('Context prepared, length:', context.length);
       }
     }
 
@@ -101,14 +106,19 @@ Guidelines: ${agentGuidelines}
 
 Goals: ${agentGoals}
 
-${context ? `Knowledge Base:
+${context ? `IMPORTANT - KNOWLEDGE BASE:
 ${context}
 
-Instructions: Use the information from the knowledge base above to answer questions. If the user asks about something not covered in the knowledge base, you can use your general knowledge but mention that the information might not be from the official knowledge base.` : 'You can use your general knowledge to help users, but let them know if they haven\'t provided specific knowledge bases yet.'}
+CRITICAL INSTRUCTIONS: 
+- ALWAYS check the knowledge base above FIRST before answering any question
+- If the answer is in the knowledge base, use that information and cite it
+- If the user asks about something covered in the knowledge base, respond based on that content
+- Only use general knowledge if the specific topic is NOT covered in the knowledge base
+- When using knowledge base info, mention "Based on the provided knowledge base..."` : 'NOTICE: No specific knowledge base has been provided yet. You can use your general knowledge to help, but let the user know they can add knowledge bases for more specific and accurate responses.'}
 
 If you cannot help with a request, respond with: "${fallbackMessage}"
 
-Always be helpful, accurate, and follow the guidelines provided.`;
+Always be helpful, accurate, and prioritize the knowledge base information when available.`;
 
     console.log('Sending request to OpenAI with system prompt length:', systemPrompt.length);
 
