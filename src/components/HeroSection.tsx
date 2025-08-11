@@ -60,14 +60,10 @@ const HeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Hero Content */}
           <div className={`space-y-8 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
-            {/* Badge */}
-            <div className="inline-flex items-center space-x-2 bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-2 text-sm">
-              <Brain className="w-4 h-4 text-primary animate-glow-pulse" />
-              <span className="text-primary font-medium">Next-Gen AI Employee Platform</span>
-            </div>
+        
 
             {/* Main Headline */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-10">
               <h1 className="text-5xl lg:text-7xl font-bold">
                 <span className="bg-gradient-hero bg-clip-text text-transparent leading-tight block">
                   Build Your
