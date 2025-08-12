@@ -1,8 +1,16 @@
-# Welcome to your Lovable project
+# Botify Labs - AI Employee Builder Platform
 
-## Project info
+A modern, interactive web application for creating and managing AI-powered virtual employees. Built with React, TypeScript, and cutting-edge UI components.
 
-**URL**: https://lovable.dev/projects/70fefb13-4de3-4a3d-b9e9-ef35c259d9b0
+![AI Employee Builder Interface](./src/assets/ai-chat-interface.jpg)
+
+## Features
+
+- 🤖 **AI Employee Builder**: Interactive wizard for creating customized AI agents
+- 🎨 **Modern UI/UX**: Sleek design with fluid animations and responsive layouts
+- 🔄 **Real-time Preview**: Live visualization of AI agent configurations
+- 🎯 **Use Case Focused**: Specialized templates for different business needs
+- 🛠️ **Customizable Workflows**: Flexible automation and integration options
 
 ## How can I edit this code?
 
@@ -50,24 +58,80 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## What technologies are used for this project?
+## Tech Stack
 
-This project is built with:
+- ⚡ **Vite** - Next Generation Frontend Tooling
+- ⚛️ **React** - A JavaScript library for building user interfaces
+- 📘 **TypeScript** - For type-safe code
+- 🎨 **Tailwind CSS** - A utility-first CSS framework
+- 🔮 **Supabase** - Backend and Database
+- 🎭 **Shadcn/ui** - Beautifully designed components
+- 🎬 **Framer Motion** - For smooth animations
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Key Components
 
-## How can I deploy this project?
+- `AIEmployeeBuilder` - Core wizard interface for creating AI agents
+- `WorkflowBuilder` - Visual workflow configuration tool
+- `InteractiveAnalyticsDashboard` - Real-time performance monitoring
+- `InteractiveCRM` - Customer relationship management interface
 
-Simply open [Lovable](https://lovable.dev/projects/70fefb13-4de3-4a3d-b9e9-ef35c259d9b0) and click on Share -> Publish.
+## Environment Setup
 
-## Can I connect a custom domain to my Lovable project?
+1. Install dependencies:
 
-Yes, you can!
+```bash
+npm install
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+2. Set up environment variables:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```bash
+cp .env.example .env.local
+```
+
+3. Configure Supabase:
+
+   - Create a new project in Supabase
+   - Update environment variables with your project credentials
+
+4. Start the development server:
+
+```bash
+npm run dev
+```
+
+## Project Structure
+
+```
+src/
+├── components/      # Reusable UI components
+├── pages/          # Main application pages
+├── hooks/          # Custom React hooks
+├── lib/            # Utility functions
+├── assets/         # Static assets
+└── integrations/   # Third-party integrations
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Deployment
+
+The application can be deployed to any modern hosting platform that supports Node.js applications. We recommend:
+
+- Vercel
+- Netlify
+- AWS Amplify
+
+## Support
+
+For support, please open an issue in the repository or contact our team at support@botify-labs.com
