@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Brain, 
-  User, 
-  MessageSquare, 
-  Phone, 
-  Mail, 
-  Settings, 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from "react";
+import {
+  Brain,
+  User,
+  MessageSquare,
+  Phone,
+  Mail,
+  Settings,
   Sparkles,
   CheckCircle2,
   ArrowRight,
@@ -16,13 +17,13 @@ import {
   Workflow,
   Globe,
   Shield,
-  Bot
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card } from '@/components/ui/card';
+  Bot,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
 
 interface BuildStep {
   id: string;
@@ -38,97 +39,100 @@ const AIEmployeeBuilder = () => {
   const [isBuilding, setIsBuilding] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  
+
   const [aiData, setAiData] = useState({
     // Persona Data
-    name: 'Alex',
-    role: 'Customer Support Agent',
-    personality: 'Professional & Friendly',
-    avatar: '🤖',
-    tone: 'professional',
-    expertise: '',
-    
+    name: "Alex",
+    role: "Customer Support Agent",
+    personality: "Professional & Friendly",
+    avatar: "🤖",
+    tone: "professional",
+    expertise: "",
+
     // Knowledge & SOPs
-    knowledgeBase: '',
-    procedures: '',
-    guidelines: '',
-    
+    knowledgeBase: "",
+    procedures: "",
+    guidelines: "",
+
     // Abilities
     selectedAbilities: [] as string[],
-    customAbilities: '',
-    
+    customAbilities: "",
+
     // Access & Tools
     channels: [] as string[],
     integrations: [] as string[],
-    permissions: '',
-    
+    permissions: "",
+
     // Workflow
-    workflowType: '',
-    triggers: '',
-    actions: ''
+    workflowType: "",
+    triggers: "",
+    actions: "",
   });
 
   const buildSteps: BuildStep[] = [
     {
-      id: 'persona',
-      title: 'Define Persona',
-      description: 'Setting personality, tone, and communication style',
+      id: "persona",
+      title: "Define Persona",
+      description: "Setting personality, tone, and communication style",
       icon: User,
-      color: 'from-blue-500 to-cyan-500',
-      duration: 2000
+      color: "from-purple to-purple-light",
+      duration: 2000,
     },
     {
-      id: 'knowledge',
-      title: 'Add Knowledge & SOPs',
-      description: 'Training on company knowledge base and procedures',
+      id: "knowledge",
+      title: "Add Knowledge & SOPs",
+      description: "Training on company knowledge base and procedures",
       icon: Brain,
-      color: 'from-purple-500 to-pink-500',
-      duration: 3000
+      color: "from-purple to-teal",
+      duration: 3000,
     },
     {
-      id: 'abilities',
-      title: 'Attach Abilities',
-      description: 'Configuring AI capabilities and skills',
+      id: "abilities",
+      title: "Attach Abilities",
+      description: "Configuring AI capabilities and skills",
       icon: Zap,
-      color: 'from-green-500 to-emerald-500',
-      duration: 2500
+      color: "from-purple-light to-mint",
+      duration: 2500,
     },
     {
-      id: 'access',
-      title: 'Configure Access & Tools',
-      description: 'Setting up permissions and integrating tools',
+      id: "access",
+      title: "Configure Access & Tools",
+      description: "Setting up permissions and integrating tools",
       icon: Settings,
-      color: 'from-orange-500 to-red-500',
-      duration: 2000
+      color: "from-orange-500 to-red-500",
+      duration: 2000,
     },
     {
-      id: 'workflow',
-      title: 'Connect to Workflow',
-      description: 'Integrating into business processes and automation',
+      id: "workflow",
+      title: "Connect to Workflow",
+      description: "Integrating into business processes and automation",
       icon: ArrowRight,
-      color: 'from-indigo-500 to-purple-500',
-      duration: 1500
-    }
+      color: "from-indigo-500 to-purple-500",
+      duration: 1500,
+    },
   ];
 
   const startBuilding = () => {
     setIsBuilding(true);
     setCurrentStep(0);
     setCompletedSteps([]);
-    
+
     buildSteps.forEach((step, index) => {
-      setTimeout(() => {
-        setCurrentStep(index);
-        setTimeout(() => {
-          setCompletedSteps(prev => [...prev, index]);
-          if (index === buildSteps.length - 1) {
-            setTimeout(() => {
-              setIsBuilding(false);
-              setIsInteractive(false);
-            }, 1000);
-          }
-        }, step.duration);
-      }, buildSteps.slice(0, index).reduce((acc, s) => acc + s.duration, 0));
+      setTimeout(
+        () => {
+          setCurrentStep(index);
+          setTimeout(() => {
+            setCompletedSteps((prev) => [...prev, index]);
+            if (index === buildSteps.length - 1) {
+              setTimeout(() => {
+                setIsBuilding(false);
+                setIsInteractive(false);
+              }, 1000);
+            }
+          }, step.duration);
+        },
+        buildSteps.slice(0, index).reduce((acc, s) => acc + s.duration, 0)
+      );
     });
   };
 
@@ -141,7 +145,7 @@ const AIEmployeeBuilder = () => {
 
   const nextStep = () => {
     if (currentStep < buildSteps.length - 1) {
-      setCompletedSteps(prev => [...prev, currentStep]);
+      setCompletedSteps((prev) => [...prev, currentStep]);
       setCurrentStep(currentStep + 1);
     }
   };
@@ -153,33 +157,33 @@ const AIEmployeeBuilder = () => {
   };
 
   const updateAiData = (field: string, value: any) => {
-    setAiData(prev => ({ ...prev, [field]: value }));
+    setAiData((prev) => ({ ...prev, [field]: value }));
   };
 
   const toggleAbility = (ability: string) => {
-    setAiData(prev => ({
+    setAiData((prev) => ({
       ...prev,
       selectedAbilities: prev.selectedAbilities.includes(ability)
-        ? prev.selectedAbilities.filter(a => a !== ability)
-        : [...prev.selectedAbilities, ability]
+        ? prev.selectedAbilities.filter((a) => a !== ability)
+        : [...prev.selectedAbilities, ability],
     }));
   };
 
   const toggleChannel = (channel: string) => {
-    setAiData(prev => ({
+    setAiData((prev) => ({
       ...prev,
       channels: prev.channels.includes(channel)
-        ? prev.channels.filter(c => c !== channel)
-        : [...prev.channels, channel]
+        ? prev.channels.filter((c) => c !== channel)
+        : [...prev.channels, channel],
     }));
   };
 
   const toggleIntegration = (integration: string) => {
-    setAiData(prev => ({
+    setAiData((prev) => ({
       ...prev,
       integrations: prev.integrations.includes(integration)
-        ? prev.integrations.filter(i => i !== integration)
-        : [...prev.integrations, integration]
+        ? prev.integrations.filter((i) => i !== integration)
+        : [...prev.integrations, integration],
     }));
   };
 
@@ -199,7 +203,7 @@ const AIEmployeeBuilder = () => {
                 <Label className="text-white">AI Name</Label>
                 <Input
                   value={aiData.name}
-                  onChange={(e) => updateAiData('name', e.target.value)}
+                  onChange={(e) => updateAiData("name", e.target.value)}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
                   placeholder="Enter AI name"
                 />
@@ -208,7 +212,7 @@ const AIEmployeeBuilder = () => {
                 <Label className="text-white">Role</Label>
                 <Input
                   value={aiData.role}
-                  onChange={(e) => updateAiData('role', e.target.value)}
+                  onChange={(e) => updateAiData("role", e.target.value)}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
                   placeholder="e.g., Customer Support Agent"
                 />
@@ -218,7 +222,7 @@ const AIEmployeeBuilder = () => {
               <Label className="text-white">Personality & Tone</Label>
               <Textarea
                 value={aiData.personality}
-                onChange={(e) => updateAiData('personality', e.target.value)}
+                onChange={(e) => updateAiData("personality", e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[100px]"
                 placeholder="Describe the AI's personality, communication style, and approach..."
               />
@@ -227,7 +231,7 @@ const AIEmployeeBuilder = () => {
               <Label className="text-white">Area of Expertise</Label>
               <Input
                 value={aiData.expertise}
-                onChange={(e) => updateAiData('expertise', e.target.value)}
+                onChange={(e) => updateAiData("expertise", e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
                 placeholder="e.g., Technical Support, Sales, HR"
               />
@@ -242,25 +246,27 @@ const AIEmployeeBuilder = () => {
               <Label className="text-white">Knowledge Base</Label>
               <Textarea
                 value={aiData.knowledgeBase}
-                onChange={(e) => updateAiData('knowledgeBase', e.target.value)}
+                onChange={(e) => updateAiData("knowledgeBase", e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[120px]"
                 placeholder="Add your company knowledge, FAQs, product information..."
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Standard Operating Procedures</Label>
+              <Label className="text-purple-dark">
+                Standard Operating Procedures
+              </Label>
               <Textarea
                 value={aiData.procedures}
-                onChange={(e) => updateAiData('procedures', e.target.value)}
+                onChange={(e) => updateAiData("procedures", e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[120px]"
                 placeholder="Define step-by-step procedures and workflows..."
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Guidelines & Policies</Label>
+              <Label className="text-purple-dark">Guidelines & Policies</Label>
               <Textarea
                 value={aiData.guidelines}
-                onChange={(e) => updateAiData('guidelines', e.target.value)}
+                onChange={(e) => updateAiData("guidelines", e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[100px]"
                 placeholder="Company policies, escalation rules, compliance requirements..."
               />
@@ -272,28 +278,42 @@ const AIEmployeeBuilder = () => {
         return (
           <div className="space-y-6">
             <div className="space-y-4">
-              <Label className="text-white">Select AI Abilities</Label>
+              <Label className="text-purple-dark">Select AI Abilities</Label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {['Natural Language Processing', 'Sentiment Analysis', 'Multi-language Support', 'Document Processing', 'Image Recognition', 'Voice Recognition', 'Data Analysis', 'Report Generation', 'Calendar Management'].map((ability) => (
+                {[
+                  "Natural Language Processing",
+                  "Sentiment Analysis",
+                  "Multi-language Support",
+                  "Document Processing",
+                  "Image Recognition",
+                  "Voice Recognition",
+                  "Data Analysis",
+                  "Report Generation",
+                  "Calendar Management",
+                ].map((ability) => (
                   <Card
                     key={ability}
                     className={`p-3 cursor-pointer transition-all duration-200 ${
                       aiData.selectedAbilities.includes(ability)
-                        ? 'bg-primary/20 border-primary text-white'
-                        : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+                        ? "bg-purple/20 border-teal text-purple-dark"
+                        : "bg-purple/10 border-purple/20 text-purple hover:bg-purple/20"
                     }`}
                     onClick={() => toggleAbility(ability)}
                   >
-                    <div className="text-sm font-medium text-center">{ability}</div>
+                    <div className="text-sm font-medium text-center">
+                      {ability}
+                    </div>
                   </Card>
                 ))}
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Custom Abilities</Label>
+              <Label className="text-purple-dark">Custom Abilities</Label>
               <Textarea
                 value={aiData.customAbilities}
-                onChange={(e) => updateAiData('customAbilities', e.target.value)}
+                onChange={(e) =>
+                  updateAiData("customAbilities", e.target.value)
+                }
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[100px]"
                 placeholder="Describe any custom abilities or specialized functions..."
               />
@@ -307,17 +327,28 @@ const AIEmployeeBuilder = () => {
             <div className="space-y-4">
               <Label className="text-white">Communication Channels</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {['Web Chat', 'WhatsApp', 'Email', 'Phone', 'SMS', 'Slack', 'Teams', 'Instagram'].map((channel) => (
+                {[
+                  "Web Chat",
+                  "WhatsApp",
+                  "Email",
+                  "Phone",
+                  "SMS",
+                  "Slack",
+                  "Teams",
+                  "Instagram",
+                ].map((channel) => (
                   <Card
                     key={channel}
                     className={`p-3 cursor-pointer transition-all duration-200 ${
                       aiData.channels.includes(channel)
-                        ? 'bg-secondary/20 border-secondary text-white'
-                        : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+                        ? "bg-secondary/20 border-secondary text-white"
+                        : "bg-white/10 border-white/20 text-white/80 hover:bg-white/20"
                     }`}
                     onClick={() => toggleChannel(channel)}
                   >
-                    <div className="text-sm font-medium text-center">{channel}</div>
+                    <div className="text-sm font-medium text-center">
+                      {channel}
+                    </div>
                   </Card>
                 ))}
               </div>
@@ -325,17 +356,28 @@ const AIEmployeeBuilder = () => {
             <div className="space-y-4">
               <Label className="text-white">Tool Integrations</Label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {['CRM System', 'Helpdesk', 'Calendar', 'Email Platform', 'Analytics', 'Database', 'Payment Gateway', 'Social Media'].map((integration) => (
+                {[
+                  "CRM System",
+                  "Helpdesk",
+                  "Calendar",
+                  "Email Platform",
+                  "Analytics",
+                  "Database",
+                  "Payment Gateway",
+                  "Social Media",
+                ].map((integration) => (
                   <Card
                     key={integration}
                     className={`p-3 cursor-pointer transition-all duration-200 ${
                       aiData.integrations.includes(integration)
-                        ? 'bg-accent/20 border-accent text-white'
-                        : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+                        ? "bg-accent/20 border-accent text-white"
+                        : "bg-white/10 border-white/20 text-white/80 hover:bg-white/20"
                     }`}
                     onClick={() => toggleIntegration(integration)}
                   >
-                    <div className="text-sm font-medium text-center">{integration}</div>
+                    <div className="text-sm font-medium text-center">
+                      {integration}
+                    </div>
                   </Card>
                 ))}
               </div>
@@ -344,7 +386,7 @@ const AIEmployeeBuilder = () => {
               <Label className="text-white">Access Permissions</Label>
               <Textarea
                 value={aiData.permissions}
-                onChange={(e) => updateAiData('permissions', e.target.value)}
+                onChange={(e) => updateAiData("permissions", e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[100px]"
                 placeholder="Define what the AI can access, modify, or control..."
               />
@@ -356,38 +398,47 @@ const AIEmployeeBuilder = () => {
         return (
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label className="text-white">Workflow Type</Label>
+              <Label className="text-purple-dark">Workflow Type</Label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {['Customer Support', 'Sales Pipeline', 'Lead Generation', 'Content Creation', 'Data Processing', 'Task Automation'].map((type) => (
+                {[
+                  "Customer Support",
+                  "Sales Pipeline",
+                  "Lead Generation",
+                  "Content Creation",
+                  "Data Processing",
+                  "Task Automation",
+                ].map((type) => (
                   <Card
                     key={type}
                     className={`p-4 cursor-pointer transition-all duration-200 ${
                       aiData.workflowType === type
-                        ? 'bg-primary/20 border-primary text-white'
-                        : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+                        ? "bg-purple/20 border-teal text-purple-dark"
+                        : "bg-purple/10 border-purple/20 text-purple hover:bg-purple/20"
                     }`}
-                    onClick={() => updateAiData('workflowType', type)}
+                    onClick={() => updateAiData("workflowType", type)}
                   >
-                    <div className="text-sm font-medium text-center">{type}</div>
+                    <div className="text-sm font-medium text-center">
+                      {type}
+                    </div>
                   </Card>
                 ))}
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Triggers & Events</Label>
+              <Label className="text-purple-dark">Triggers & Events</Label>
               <Textarea
                 value={aiData.triggers}
-                onChange={(e) => updateAiData('triggers', e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[100px]"
+                onChange={(e) => updateAiData("triggers", e.target.value)}
+                className="bg-purple/10 border-purple/20 text-purple-dark placeholder:text-purple/60 min-h-[100px]"
                 placeholder="When should this AI be activated? (e.g., new customer inquiry, form submission...)"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Automated Actions</Label>
+              <Label className="text-purple-dark">Automated Actions</Label>
               <Textarea
                 value={aiData.actions}
-                onChange={(e) => updateAiData('actions', e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/60 min-h-[100px]"
+                onChange={(e) => updateAiData("actions", e.target.value)}
+                className="bg-purple/10 border-purple/20 text-purple-dark placeholder:text-purple/60 min-h-[100px]"
                 placeholder="What actions should the AI perform? (e.g., send emails, create tickets, update database...)"
               />
             </div>
@@ -400,19 +451,19 @@ const AIEmployeeBuilder = () => {
   };
 
   return (
-    <div className="relative w-full h-[600px] bg-gradient-to-br from-slate-900/50 to-purple-900/30 rounded-3xl border border-primary/20 overflow-hidden">
+    <div className="relative w-full h-[600px] bg-gradient-to-br from-purple/5 via-mint/20 to-teal/10 rounded-3xl border border-teal/30 overflow-hidden backdrop-blur-xl shadow-lg">
       {/* Animated Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-ai opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple/5 via-mint/10 to-teal/5 opacity-70" />
         {[...Array(30)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-px h-px bg-primary/40 rounded-full animate-pulse"
+            className="absolute w-px h-px bg-purple/30 rounded-full animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 3}s`
+              animationDuration: `${2 + Math.random() * 3}s`,
             }}
           />
         ))}
@@ -427,24 +478,36 @@ const AIEmployeeBuilder = () => {
                 {aiData.avatar}
               </div>
               {(isBuilding || isInteractive) && (
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping" />
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-mint rounded-full animate-ping" />
               )}
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">{aiData.name}</h3>
-              <p className="text-primary/80">{aiData.role}</p>
-              <p className="text-xs text-white/60">{aiData.personality.split(' ').slice(0, 3).join(' ')}</p>
+              <h3 className="text-xl font-bold text-purple-dark">
+                {aiData.name}
+              </h3>
+              <p className="text-purple-light">{aiData.role}</p>
+              <p className="text-sm text-purple/70">
+                {aiData.personality.split(" ").slice(0, 3).join(" ")}
+              </p>
             </div>
           </div>
-          
+
           {!isBuilding && !isInteractive && (
             <div className="flex gap-3">
-              <Button onClick={startInteractive} variant="cta" className="group">
+              <Button
+                onClick={startInteractive}
+                variant="cta"
+                className="group"
+              >
                 <User className="w-4 h-4 mr-2" />
                 Build AI Employee
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button onClick={startBuilding} variant="outline" className="group">
+              <Button
+                onClick={startBuilding}
+                variant="outline"
+                className="group"
+              >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Auto Build
               </Button>
@@ -464,26 +527,36 @@ const AIEmployeeBuilder = () => {
 
                 return (
                   <div key={step.id} className="text-center">
-                    <div className={`
-                      relative w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br ${step.color}
-                      flex items-center justify-center transition-all duration-500
-                      ${isActive ? 'scale-110 animate-pulse ring-4 ring-primary/50' : ''}
-                      ${isCompleted ? 'scale-100' : ''}
-                      ${isPending ? 'scale-90 opacity-50' : ''}
-                    `}>
+                    <div
+                      className={`
+                      relative w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br from-purple to-purple-light
+                      flex items-center justify-center transition-all duration-500 border border-teal/20
+                      ${
+                        isActive
+                          ? "scale-110 animate-pulse ring-2 ring-mint shadow-lg"
+                          : ""
+                      }
+                      ${
+                        isCompleted
+                          ? "scale-100 bg-gradient-to-br from-mint to-teal"
+                          : ""
+                      }
+                      ${isPending ? "scale-90 opacity-50" : ""}
+                    `}
+                    >
                       <IconComponent className="w-6 h-6 text-white" />
-                      
+
                       {isCompleted && (
                         <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center animate-scale-in">
                           <CheckCircle2 className="w-3 h-3 text-white" />
                         </div>
                       )}
-                      
+
                       {isActive && (
                         <div className="absolute inset-0 rounded-xl bg-white/20 animate-pulse" />
                       )}
                     </div>
-                    
+
                     <div className="text-xs text-white/80 font-medium mb-1">
                       {step.title}
                     </div>
@@ -496,10 +569,12 @@ const AIEmployeeBuilder = () => {
             </div>
 
             {/* Current Step Details */}
-            <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+            <div className="bg-mint/20 backdrop-blur-sm rounded-2xl p-6 border border-teal/30 shadow-lg">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                  {React.createElement(buildSteps[currentStep]?.icon, { className: "w-5 h-5 text-white" })}
+                <div className="w-8 h-8 bg-gradient-to-br from-purple to-purple-light rounded-lg flex items-center justify-center border border-teal/20">
+                  {React.createElement(buildSteps[currentStep]?.icon, {
+                    className: "w-5 h-5 text-mint",
+                  })}
                 </div>
                 <div>
                   <h4 className="text-white font-semibold">
@@ -510,7 +585,7 @@ const AIEmployeeBuilder = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white/10 rounded-full h-2 overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-primary to-secondary animate-pulse" />
               </div>
@@ -522,12 +597,19 @@ const AIEmployeeBuilder = () => {
         {!isBuilding && completedSteps.length === buildSteps.length && (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center animate-scale-in">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
-                <Zap className="w-10 h-10 text-white animate-pulse" />
+              <div className="w-20 h-20 bg-gradient-to-br from-purple via-purple-light to-teal rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-teal/20">
+                <Zap className="w-10 h-10 text-mint animate-pulse" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">AI Employee Ready!</h3>
-              <p className="text-white/80 mb-6">Alex is now live and ready to help your customers</p>
-              <Button variant="cta" onClick={() => setCompletedSteps([])}>
+              <h3 className="text-2xl font-bold text-purple-dark mb-2">
+                AI Employee Ready!
+              </h3>
+              <p className="text-purple/80 mb-6">
+                Alex is now live and ready to help your customers
+              </p>
+              <Button
+                className="bg-purple hover:bg-purple-light text-mint shadow-lg"
+                onClick={() => setCompletedSteps([])}
+              >
                 Create Another AI Employee
               </Button>
             </div>
@@ -543,28 +625,32 @@ const AIEmployeeBuilder = () => {
                 const IconComponent = step.icon;
                 const isActive = index === currentStep;
                 const isCompleted = completedSteps.includes(index);
-                const isPending = index > currentStep && !completedSteps.includes(index);
+                const isPending =
+                  index > currentStep && !completedSteps.includes(index);
 
                 return (
                   <div key={step.id} className="text-center">
-                    <div className={`
-                      relative w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br ${step.color}
+                    <div
+                      className={`
+                      relative w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br ${
+                        step.color
+                      }
                       flex items-center justify-center transition-all duration-500 cursor-pointer
-                      ${isActive ? 'scale-110 ring-4 ring-primary/50' : ''}
-                      ${isCompleted ? 'scale-100' : ''}
-                      ${isPending ? 'scale-90 opacity-50' : ''}
+                      ${isActive ? "scale-110 ring-4 ring-primary/50" : ""}
+                      ${isCompleted ? "scale-100" : ""}
+                      ${isPending ? "scale-90 opacity-50" : ""}
                     `}
-                    onClick={() => setCurrentStep(index)}
+                      onClick={() => setCurrentStep(index)}
                     >
                       <IconComponent className="w-6 h-6 text-white" />
-                      
+
                       {isCompleted && (
                         <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center animate-scale-in">
                           <CheckCircle2 className="w-3 h-3 text-white" />
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="text-xs text-white/80 font-medium mb-1">
                       {step.title}
                     </div>
@@ -577,7 +663,9 @@ const AIEmployeeBuilder = () => {
             <div className="flex-1 bg-black/30 backdrop-blur-sm rounded-2xl p-6 border border-white/10 mb-6 overflow-y-auto">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                  {React.createElement(buildSteps[currentStep]?.icon, { className: "w-5 h-5 text-white" })}
+                  {React.createElement(buildSteps[currentStep]?.icon, {
+                    className: "w-5 h-5 text-white",
+                  })}
                 </div>
                 <div>
                   <h4 className="text-white font-semibold text-lg">
@@ -588,7 +676,7 @@ const AIEmployeeBuilder = () => {
                   </p>
                 </div>
               </div>
-              
+
               {renderStepContent()}
             </div>
 
@@ -609,7 +697,11 @@ const AIEmployeeBuilder = () => {
               </div>
 
               {currentStep === buildSteps.length - 1 ? (
-                <Button onClick={finishBuilding} variant="cta" className="group">
+                <Button
+                  onClick={finishBuilding}
+                  variant="cta"
+                  className="group"
+                >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Finish Building
                   <CheckCircle2 className="w-4 h-4 ml-2" />
@@ -626,20 +718,28 @@ const AIEmployeeBuilder = () => {
         {/* Capabilities Preview */}
         {!isBuilding && !isInteractive && completedSteps.length === 0 && (
           <div className="flex-1 grid grid-cols-3 gap-4">
-            <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center">
+            <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center">
               <MessageSquare className="w-8 h-8 text-primary mx-auto mb-2" />
               <div className="text-sm text-white font-medium">Chat Support</div>
-              <div className="text-xs text-white/60">24/7 customer assistance</div>
+              <div className="text-xs text-white/60">
+                24/7 customer assistance
+              </div>
             </div>
-            <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center">
+            <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center">
               <Phone className="w-8 h-8 text-secondary mx-auto mb-2" />
               <div className="text-sm text-white font-medium">Voice Calls</div>
-              <div className="text-xs text-white/60">Natural phone conversations</div>
+              <div className="text-xs text-white/60">
+                Natural phone conversations
+              </div>
             </div>
-            <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center">
+            <div className="bg-black/50 backdrop-blur-sm rounded-xl p-4 border border-white/10 text-center">
               <Mail className="w-8 h-8 text-accent mx-auto mb-2" />
-              <div className="text-sm text-white font-medium">Email Support</div>
-              <div className="text-xs text-white/60">Automated email responses</div>
+              <div className="text-sm text-white font-medium">
+                Email Support
+              </div>
+              <div className="text-xs text-white/60">
+                Automated email responses
+              </div>
             </div>
           </div>
         )}

@@ -179,14 +179,6 @@ const Navigation = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
             <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center space-x-2 text-black hover:text-purple-light hover:bg-mint/50"
-            >
-              <PlayCircle className="w-4 h-4" />
-              <span>Watch Demo</span>
-            </Button>
-            <Button
               variant="outline"
               size="sm"
               onClick={() => navigate("/auth")}
@@ -284,14 +276,6 @@ const Navigation = () => {
               </div>
 
               <div className="pt-4 space-y-3 px-4">
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  className="w-full flex items-center justify-center space-x-2 text-purple hover:text-purple-light hover:bg-mint/50"
-                >
-                  <PlayCircle className="w-4 h-4" />
-                  <span>Watch Demo</span>
-                </Button>
                 <Button
                   variant="outline"
                   size="lg"
